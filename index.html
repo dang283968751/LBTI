@@ -351,7 +351,11 @@ var IMAGE_MAP = {
 };
 
 function fixImagePath(path) {
-  return IMAGE_MAP[path] || path;
+  var mapped = IMAGE_MAP[path] || path;
+  // Convert to webp
+  if (mapped.endsWith('.png')) mapped = mapped.slice(0, -4) + '.webp';
+  else if (mapped.endsWith('.jpg')) mapped = mapped.slice(0, -4) + '.webp';
+  return mapped;
 }
 
 // ==================== INIT ====================
