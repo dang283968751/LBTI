@@ -177,9 +177,23 @@
     <p class="text-slate-500 dark:text-slate-400 mb-6 i18n"
        data-cn="🔥 火爆全网的趣味人格测试 · 30 题解锁你的专属人格<br>已有 27 种结局等你来探索"
        data-en="🔥 Viral personality quiz · 30 questions to unlock your type<br>27 unique outcomes await you"></p>
-    <button onclick="startQuiz(true)" class="btn-primary px-10 py-4 text-lg inline-flex items-center gap-2">
-      <span class="i18n" data-cn="✨ 开始测试" data-en="✨ Start Quiz"></span>
-    </button>
+    <!-- Resume quiz (shown when quiz in progress) -->
+    <div id="resume-section" class="hidden mb-4">
+      <p class="text-xs text-slate-400 mb-2 i18n" data-cn="📝 你有一个未完成的测试" data-en="📝 You have an unfinished quiz"></p>
+      <button onclick="startQuiz(false)" class="btn-primary px-10 py-4 text-lg inline-flex items-center gap-2 w-full justify-center">
+        <span class="i18n" data-cn="📋 继续答题" data-en="📋 Continue Quiz"></span>
+      </button>
+      <p class="text-xs text-slate-400 mt-2">
+        <span id="resume-progress"></span>
+        <button onclick="startQuiz(true)" class="text-pink-500 underline ml-1 i18n" data-cn="（重新开始）" data-en="(Start over)"></button>
+      </p>
+    </div>
+
+    <div id="start-section">
+      <button onclick="startQuiz(true)" class="btn-primary px-10 py-4 text-lg inline-flex items-center gap-2">
+        <span class="i18n" data-cn="✨ 开始测试" data-en="✨ Start Quiz"></span>
+      </button>
+    </div>
     <p class="text-xs text-slate-400 mt-3 i18n" data-cn="约 3 分钟 · 仅供娱乐" data-en="~3 min · For fun only"></p>
     <p class="text-xs text-pink-400/70 mt-2" id="test-counter"></p>
 
@@ -299,7 +313,7 @@ function refreshI18n() {
   if (currentView === 'wiki') buildWikiGrid();
   if (currentView === 'quiz') renderQuestion();
   if (currentView === 'result' && result) showResult();
-  if (currentView === 'landing') renderHistory();
+  if (currentView === 'landing') { renderHistory(); checkResumeQuiz(); }
 }
 
 // ==================== IMAGE PATH FIX ====================
@@ -393,7 +407,27 @@ function showView(id) {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function backToLanding() { showView('landing'); renderHistory(); history.replaceState(null,'','#'); }
+function backToLanding() { showView('landing'); renderHistory(); checkResumeQuiz(); history.replaceState(null,'','#'); }
+
+function checkResumeQuiz() {
+  var resumeSection = document.getElementById('resume-section');
+  var startSection = document.getElementById('start-section');
+  if (!resumeSection || !startSection) return;
+  try {
+    var saved = JSON.parse(localStorage.getItem('sbti-quiz') || 'null');
+    if (saved && saved.currentQ > 0 && saved.answers && Object.keys(saved.answers).length > 0) {
+      resumeSection.classList.remove('hidden');
+      startSection.classList.add('hidden');
+      var done = Object.keys(saved.answers).length;
+      var total = 30;
+      var el = document.getElementById('resume-progress');
+      if (el) el.textContent = t('已完成 ' + done + ' / ' + total + ' 题', 'Done: ' + done + ' / ' + total);
+      return;
+    }
+  } catch(e) {}
+  resumeSection.classList.add('hidden');
+  startSection.classList.remove('hidden');
+}
 
 function showWiki() { showView('wiki'); buildWikiGrid(); history.replaceState(null,'','#wiki'); }
 
