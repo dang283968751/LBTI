@@ -351,11 +351,14 @@ var IMAGE_MAP = {
 };
 
 function fixImagePath(path) {
-  var mapped = IMAGE_MAP[path] || path;
-  // Convert to webp
-  if (mapped.endsWith('.png')) mapped = mapped.slice(0, -4) + '.webp';
-  else if (mapped.endsWith('.jpg')) mapped = mapped.slice(0, -4) + '.webp';
-  return mapped;
+  // webp files live in /image/ using original filenames from outcomes.json
+  // path e.g. "images/CTRL.png" or "images/ATM-er.png"
+  var parts = path.replace(/\\/g, '/').split('/');
+  var filename = parts[parts.length - 1];
+  var base = filename.replace(/\.(png|jpg|jpeg)$/i, '');
+  // DRUN-K edge case: outcomes has DRUNK but webp file is DRUN-K
+  if (base === 'DRUNK') base = 'DRUN-K';
+  return 'image/' + base + '.webp';
 }
 
 // ==================== INIT ====================
