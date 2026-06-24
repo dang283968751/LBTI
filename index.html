@@ -177,7 +177,7 @@
     <p class="text-slate-500 dark:text-slate-400 mb-6 i18n"
        data-cn="🔥 火爆全网的趣味人格测试 · 30 题解锁你的专属人格<br>已有 27 种结局等你来探索"
        data-en="🔥 Viral personality quiz · 30 questions to unlock your type<br>27 unique outcomes await you"></p>
-    <button onclick="startQuiz()" class="btn-primary px-10 py-4 text-lg inline-flex items-center gap-2">
+    <button onclick="startQuiz(true)" class="btn-primary px-10 py-4 text-lg inline-flex items-center gap-2">
       <span class="i18n" data-cn="✨ 开始测试" data-en="✨ Start Quiz"></span>
     </button>
     <p class="text-xs text-slate-400 mt-3 i18n" data-cn="约 3 分钟 · 仅供娱乐" data-en="~3 min · For fun only"></p>
@@ -367,6 +367,7 @@ async function init() {
 function handleHash() {
   var h = location.hash;
   if (h.startsWith('#quiz')) startQuiz();
+  else if (h.startsWith('#result')) restoreResult();
   else if (h.startsWith('#wiki')) showWiki();
   else backToLanding();
 }
@@ -384,10 +385,24 @@ function backToLanding() { showView('landing'); history.replaceState(null,'','#'
 function showWiki() { showView('wiki'); buildWikiGrid(); history.replaceState(null,'','#wiki'); }
 
 // ==================== QUIZ ====================
-function startQuiz() {
+function startQuiz(fresh) {
+  if (!fresh) {
+    try {
+      var saved = JSON.parse(sessionStorage.getItem('sbti-quiz') || 'null');
+      if (saved && saved.currentQ > 0 && saved.answers) {
+        answers = saved.answers;
+        currentQ = saved.currentQ;
+        showView('quiz');
+        history.replaceState(null,'','#quiz');
+        renderQuestion();
+        return;
+      }
+    } catch(e) {}
+  }
   answers = {};
   result = null;
   currentQ = 0;
+  sessionStorage.removeItem('sbti-quiz');
   showView('quiz');
   history.replaceState(null,'','#quiz');
   renderQuestion();
@@ -425,6 +440,7 @@ function selectOption(qid, value, el) {
   document.querySelectorAll('#options-container .btn-option').forEach(function(b) { b.classList.remove('selected'); });
   el.classList.add('selected');
   updateNavButtons();
+  saveQuizState();
   // Auto-advance after short delay for tap feedback
   setTimeout(function() { nextQuestion(); }, 350);
 }
@@ -457,10 +473,15 @@ function nextQuestion() {
     finishQuiz();
     return;
   }
-  // Insert drink gate around q12
-  if (currentQ === 11 && answers['drink_gate_q1'] === undefined) { showDrinkQuestions(); return; }
   currentQ++;
   renderQuestion();
+  saveQuizState();
+}
+
+function saveQuizState() {
+  try {
+    sessionStorage.setItem('sbti-quiz', JSON.stringify({ currentQ: currentQ, answers: answers, view: 'quiz' }));
+  } catch(e) {}
 }
 
 function prevQuestion() {
@@ -514,6 +535,7 @@ function selectDrinkOption(qid, value, el) {
 
 // ==================== SCORING ====================
 function finishQuiz() {
+  sessionStorage.removeItem('sbti-quiz');
   incrementTestCounter();
   var dimOrder = DIMENSIONS.order;
   var dimScores = {};
@@ -657,6 +679,15 @@ function showResult() {
 
   document.getElementById('result-content').innerHTML = html;
   history.replaceState(null,'','#result/' + r.code);
+  try { sessionStorage.setItem('sbti-result', JSON.stringify(r)); } catch(e) {}
+}
+
+function restoreResult() {
+  try {
+    var saved = sessionStorage.getItem('sbti-result');
+    if (saved) { result = JSON.parse(saved); showResult(); return; }
+  } catch(e) {}
+  backToLanding();
 }
 
 // ==================== WIKI GALLERY ====================
