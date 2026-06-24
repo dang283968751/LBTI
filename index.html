@@ -196,6 +196,7 @@
     </div>
     <p class="text-xs text-slate-400 mt-3 i18n" data-cn="约 3 分钟 · 仅供娱乐" data-en="~3 min · For fun only"></p>
     <p class="text-xs text-pink-400/70 mt-2" id="test-counter"></p>
+    <p class="text-xs text-pink-400/50 mt-1" id="visitor-counter"></p>
 
     <div class="mt-8 pt-6 border-t border-pink-100 dark:border-pink-900/30">
       <p class="text-sm text-slate-500 mb-3 i18n" data-cn="👀 不想做测试？直接看全部 27 种人格 ↓" data-en="👀 Skip the quiz? Browse all 27 types ↓"></p>
@@ -310,6 +311,7 @@ function refreshI18n() {
   // Update nav button text
   if (currentView === 'quiz') updateNavButtons();
   updateTestCounter();
+  updateVisitorCounter();
   // Refresh current view
   if (currentView === 'wiki') buildWikiGrid();
   if (currentView === 'quiz') renderQuestion();
@@ -799,16 +801,39 @@ function saveToHistory(r) {
 
 function saveAIReportToHistory(report) {
   loadHistory();
-  // Match by current result's code: find the newest entry with same code (today's)
+  // Save to history entry
   for (var i = testHistory.length - 1; i >= 0; i--) {
     if (testHistory[i].code === result.code) {
       testHistory[i].aiReport = report;
-      try {
-        localStorage.setItem('sbti-history', JSON.stringify(testHistory));
-      } catch(e) {}
-      return;
+      try { localStorage.setItem('sbti-history', JSON.stringify(testHistory)); } catch(e) {}
+      break;
     }
   }
+  // Also save to sbti-result so it survives refresh / shared link on same device
+  try {
+    var savedResult = JSON.parse(localStorage.getItem('sbti-result') || 'null');
+    if (savedResult && savedResult.code === result.code) {
+      savedResult.aiReport = report;
+      localStorage.setItem('sbti-result', JSON.stringify(savedResult));
+    }
+  } catch(e) {}
+}
+
+// Reusable: inject saved AI report into the result page DOM
+function displayAIReport(report) {
+  setTimeout(function() {
+    var btn = document.getElementById('ai-btn');
+    var loading = document.getElementById('ai-loading');
+    var errorDiv = document.getElementById('ai-error');
+    var resultDiv = document.getElementById('ai-result');
+    if (btn) btn.classList.add('hidden');
+    if (loading) loading.classList.add('hidden');
+    if (errorDiv) errorDiv.classList.add('hidden');
+    if (resultDiv) {
+      resultDiv.classList.remove('hidden');
+      resultDiv.innerHTML = '<div class="ai-report text-sm leading-relaxed text-slate-600 dark:text-slate-300">' + renderMarkdown(report) + '</div>';
+    }
+  }, 50);
 }
 
 function renderHistory() {
@@ -857,21 +882,7 @@ function viewHistoryResult(ts) {
   result.userVector = entry.userVector;
   showResult();
   // If AI report was saved before, display it
-  if (entry.aiReport) {
-    setTimeout(function() {
-      var btn = document.getElementById('ai-btn');
-      var loading = document.getElementById('ai-loading');
-      var errorDiv = document.getElementById('ai-error');
-      var resultDiv = document.getElementById('ai-result');
-      if (btn) btn.classList.add('hidden');
-      if (loading) loading.classList.add('hidden');
-      if (errorDiv) errorDiv.classList.add('hidden');
-      if (resultDiv) {
-        resultDiv.classList.remove('hidden');
-        resultDiv.innerHTML = '<div class="ai-report text-sm leading-relaxed text-slate-600 dark:text-slate-300">' + renderMarkdown(entry.aiReport) + '</div>';
-      }
-    }, 50);
-  }
+  if (entry.aiReport) { displayAIReport(entry.aiReport); }
   _skipHistorySave = false;
 }
 
@@ -886,7 +897,13 @@ function clearHistory() {
 function restoreResult() {
   try {
     var saved = localStorage.getItem('sbti-result');
-    if (saved) { result = JSON.parse(saved); showResult(); return; }
+    if (saved) {
+      result = JSON.parse(saved);
+      showResult();
+      // Restore AI report if it was saved
+      if (result.aiReport) { displayAIReport(result.aiReport); }
+      return;
+    }
   } catch(e) {}
   // Also check history for the code in the URL hash
   var hashCode = location.hash.replace('#result/', '').replace('#result', '');
@@ -1136,7 +1153,7 @@ function generateAIReport() {
       resultDiv.classList.remove('hidden');
       resultDiv.innerHTML = '<div class="ai-report text-sm leading-relaxed text-slate-600 dark:text-slate-300">' + renderMarkdown(data.report) + '</div>';
     }
-    // Save AI report to history entry
+    // Persist AI report to history & result storage
     saveAIReportToHistory(data.report);
     // Scroll to AI result
     var aiCard = document.getElementById('ai-card');
@@ -1253,7 +1270,7 @@ function isWechat() { return /micromessenger/i.test(navigator.userAgent); }
 })();
 */
 
-// Simple pageview counter (localStorage-based, approximate unique visitors)
+// Page view & test completion counters
 (function(){
   var key = 'sbti-visit';
   var now = Date.now();
@@ -1261,17 +1278,17 @@ function isWechat() { return /micromessenger/i.test(navigator.userAgent); }
   // Count as new visit if never visited or >30min since last visit
   if (!prev || (now - parseInt(prev)) > 1800000) {
     localStorage.setItem(key, now);
-    // ponytail: sendBeacon to a no-op — replace URL with your own analytics endpoint
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon('https://sbti-wiki.pages.dev/cdn-cgi/rum?', JSON.stringify({page:location.pathname}));
-    }
+    // Report visit to server-side counter
+    fetch('/api/visitor', { method: 'POST' }).catch(function(){});
   }
-  // Show test completion counter
+  // Fetch both counters
+  fetchVisitorCount();
   fetchTestCount();
 })();
 
-// Global test completion counter via Cloudflare Pages Function
+// Global counters
 var globalTestCount = 0;
+var globalVisitorCount = 0;
 
 function updateTestCounter() {
   var el = document.getElementById('test-counter');
@@ -1279,6 +1296,25 @@ function updateTestCounter() {
   if (globalTestCount > 0) {
     el.textContent = (lang === 'cn' ? '📊 全球已有 ' : '📊 ') + globalTestCount.toLocaleString() + (lang === 'cn' ? ' 人完成了测试' : ' people have tested');
   }
+}
+
+function updateVisitorCounter() {
+  var el = document.getElementById('visitor-counter');
+  if (!el) return;
+  if (globalVisitorCount > 0) {
+    el.textContent = (lang === 'cn' ? '👀 ' : '👀 ') + globalVisitorCount.toLocaleString() + (lang === 'cn' ? ' 人访问过' : ' visitors');
+  }
+}
+
+async function fetchVisitorCount() {
+  try {
+    var res = await fetch('/api/visitor');
+    if (res.ok) {
+      var data = await res.json();
+      globalVisitorCount = data.count || 0;
+      updateVisitorCounter();
+    }
+  } catch(e) {}
 }
 
 async function fetchTestCount() {
