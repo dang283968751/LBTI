@@ -181,6 +181,7 @@
       <span class="i18n" data-cn="✨ 开始测试" data-en="✨ Start Quiz"></span>
     </button>
     <p class="text-xs text-slate-400 mt-3 i18n" data-cn="约 3 分钟 · 仅供娱乐" data-en="~3 min · For fun only"></p>
+    <p class="text-xs text-pink-400/70 mt-2" id="test-counter"></p>
 
     <div class="mt-8 pt-6 border-t border-pink-100 dark:border-pink-900/30">
       <p class="text-sm text-slate-500 mb-3 i18n" data-cn="👀 不想做测试？直接看全部 27 种人格 ↓" data-en="👀 Skip the quiz? Browse all 27 types ↓"></p>
@@ -285,6 +286,7 @@ function refreshI18n() {
   });
   // Update nav button text
   updateNavButtons();
+  updateTestCounter();
   // Refresh current view
   if (currentView === 'wiki') buildWikiGrid();
   if (currentView === 'quiz') renderQuestion();
@@ -423,6 +425,8 @@ function selectOption(qid, value, el) {
   document.querySelectorAll('#options-container .btn-option').forEach(function(b) { b.classList.remove('selected'); });
   el.classList.add('selected');
   updateNavButtons();
+  // Auto-advance after short delay for tap feedback
+  setTimeout(function() { nextQuestion(); }, 350);
 }
 
 function updateNavButtons() {
@@ -477,14 +481,21 @@ function showDrinkQuestions() {
     });
     html += '</div>';
   });
-  html += '<button onclick="finishQuiz()" id="btn-drink-done" class="btn-primary w-full py-3 rounded-2xl font-semibold text-lg"';
+  var isLastQ = currentQ >= QUESTIONS.length - 1;
+  html += '<button onclick="resumeAfterDrink()" id="btn-drink-done" class="btn-primary w-full py-3 rounded-2xl font-semibold text-lg"';
   if (answers['drink_gate_q2'] === undefined) html += ' disabled style="opacity:.4"';
-  html += '>' + t('✨ 查看结果', '✨ See Result') + '</button>';
+  html += '>' + (isLastQ ? t('✨ 查看结果', '✨ See Result') : t('继续答题 →', 'Continue →')) + '</button>';
 
   var quizEl = document.getElementById('quiz');
   quizEl.innerHTML = html;
   quizEl.classList.remove('hidden');
   showView('quiz');
+}
+
+function resumeAfterDrink() {
+  if (currentQ >= QUESTIONS.length - 1) { finishQuiz(); return; }
+  currentQ = 12;
+  renderQuestion();
 }
 
 function selectDrinkOption(qid, value, el) {
@@ -496,11 +507,14 @@ function selectDrinkOption(qid, value, el) {
   if (answers['drink_gate_q2'] !== undefined) {
     btn.disabled = false;
     btn.style.opacity = '1';
+    // Auto-advance when both drink gate questions answered
+    setTimeout(function() { resumeAfterDrink(); }, 350);
   }
 }
 
 // ==================== SCORING ====================
 function finishQuiz() {
+  incrementTestCounter();
   var dimOrder = DIMENSIONS.order;
   var dimScores = {};
   var userVector = [];
@@ -796,21 +810,15 @@ function generateShareCard() {
     // Hint text
     ctx.fillStyle = '#9d7a8f';
     ctx.font = '14px "PingFang SC","Microsoft YaHei",sans-serif';
-    ctx.fillText(t('扫码或搜索「SBTI 人格测试」来测', 'Find us: SBTI Personality Test'), 300, 670);
-    ctx.fillText(t('🔥 27 种人格结局等你发现', '🔥 27 personality types await'), 300, 698);
+    ctx.fillText(t('🔥 27 种人格结局等你发现', '🔥 27 personality types await'), 300, 680);
 
     // CTA pill
     ctx.fillStyle = 'rgba(244,114,182,.1)';
-    roundRectCanvas(ctx, 110, 725, 380, 60, 30);
+    roundRectCanvas(ctx, 110, 710, 380, 60, 30);
     ctx.fill();
     ctx.fillStyle = '#f472b6';
     ctx.font = 'bold 24px "PingFang SC","Microsoft YaHei",sans-serif';
-    ctx.fillText(t('🔍 小红书搜「SBTI人格测试」', '🔍 Try the SBTI Quiz!'), 300, 764);
-
-    // Watermark
-    ctx.fillStyle = 'rgba(157,122,143,.4)';
-    ctx.font = '12px "PingFang SC","Microsoft YaHei",sans-serif';
-    ctx.fillText('sbti-wiki.pages.dev', 300, 792);
+    ctx.fillText(t('🔍 小红书搜「SBTI人格测试」', '🔍 Try the SBTI Quiz!'), 300, 750);
 
     // Download — reset scale before export so PNG is full 1200x1600
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -894,7 +902,44 @@ function isWechat() { return /micromessenger/i.test(navigator.userAgent); }
       navigator.sendBeacon('https://sbti-wiki.pages.dev/cdn-cgi/rum?', JSON.stringify({page:location.pathname}));
     }
   }
+  // Show test completion counter
+  fetchTestCount();
 })();
+
+// Global test completion counter via Cloudflare Pages Function
+var globalTestCount = 0;
+
+function updateTestCounter() {
+  var el = document.getElementById('test-counter');
+  if (!el) return;
+  if (globalTestCount > 0) {
+    el.textContent = (lang === 'cn' ? '📊 全球已有 ' : '📊 ') + globalTestCount.toLocaleString() + (lang === 'cn' ? ' 人完成了测试' : ' people have tested');
+  }
+}
+
+async function fetchTestCount() {
+  try {
+    var res = await fetch('/api/counter');
+    if (res.ok) {
+      var data = await res.json();
+      globalTestCount = data.count || 0;
+      updateTestCounter();
+    }
+  } catch (e) {
+    // Degrade silently — counter just won't show
+  }
+}
+
+async function incrementTestCounter() {
+  try {
+    var res = await fetch('/api/counter', { method: 'POST' });
+    if (res.ok) {
+      var data = await res.json();
+      globalTestCount = data.count || 0;
+      updateTestCounter();
+    }
+  } catch (e) { /* degrade silently */ }
+}
 
 // ==================== BOOT ====================
 document.addEventListener('DOMContentLoaded', init);
