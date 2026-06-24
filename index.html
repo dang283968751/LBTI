@@ -356,6 +356,9 @@ async function init() {
     console.error('Data load failed:', e);
   }
 
+  // ponytail: save original quiz HTML — showDrinkQuestions() overwrites it
+  window._quizHTML = document.getElementById('quiz').innerHTML;
+
   if (localStorage.getItem('sbti-lang') === 'en') { lang = 'en'; switchLang(); }
   refreshI18n();
   if (isWechat()) document.getElementById('wechat-banner').classList.remove('hidden');
@@ -403,6 +406,9 @@ function startQuiz(fresh) {
   result = null;
   currentQ = 0;
   sessionStorage.removeItem('sbti-quiz');
+  sessionStorage.removeItem('sbti-result');
+  // Restore original quiz DOM (showDrinkQuestions may have overwritten it)
+  if (window._quizHTML) document.getElementById('quiz').innerHTML = window._quizHTML;
   showView('quiz');
   history.replaceState(null,'','#quiz');
   renderQuestion();
