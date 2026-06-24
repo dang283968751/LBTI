@@ -151,7 +151,7 @@
 <!-- Header -->
 <header class="sticky top-0 z-30 bg-white/80 dark:bg-[#1a1025]/80 backdrop-blur-lg border-b border-pink-100 dark:border-pink-900/30" style="padding-top:var(--safe-top)">
   <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 cursor-pointer" onclick="backToLanding()" title="返回首页">
       <span class="text-2xl">🎭</span>
       <div>
         <h1 class="text-sm font-bold truncate i18n" data-cn="SBTI 人格测试" data-en="SBTI Personality"></h1>
@@ -694,10 +694,11 @@ function showResult() {
   html += '</div>';
 
   // Actions
-  html += '<div class="flex gap-3">';
+  html += '<div class="flex gap-3 mb-3">';
   html += '<button onclick="startQuiz(true)" class="flex-1 py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-slate-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">🔄 ' + t('重新测试', 'Retake') + '</button>';
   html += '<button onclick="showWiki()" class="flex-1 py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-slate-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">📖 ' + t('查看全部人格', 'All Types') + '</button>';
   html += '</div>';
+  html += '<button onclick="backToLanding()" class="w-full py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">🏠 ' + t('返回首页查看历史记录', 'Home · History') + '</button>';
 
   document.getElementById('result-content').innerHTML = html;
   history.replaceState(null,'','#result/' + r.code);
