@@ -145,7 +145,7 @@ Please generate a complete deep interpretation report based on the above data.`;
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'deepseek-v4-pro',
+        model: 'deepseek-v4-flash',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -170,7 +170,7 @@ Please generate a complete deep interpretation report based on the above data.`;
 
     return new Response(JSON.stringify({
       report: content,
-      model: 'deepseek-v4-pro'
+      model: 'deepseek-v4-flash'
     }), { headers });
 
   } catch (e) {

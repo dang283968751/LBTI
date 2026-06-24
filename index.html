@@ -185,7 +185,7 @@
       </button>
       <p class="text-xs text-slate-400 mt-2">
         <span id="resume-progress"></span>
-        <button onclick="startQuiz(true)" class="text-pink-500 underline ml-1 i18n" data-cn="（重新开始）" data-en="(Start over)"></button>
+        <button onclick="startQuiz(true)" class="text-pink-500 underline ml-1 i18n" data-cn="（放弃进度，重新开始）" data-en="(Discard & start over)"></button>
       </p>
     </div>
 
@@ -284,6 +284,7 @@ var answers = {};
 var result = null;
 var lang = 'cn';
 var testHistory = [];
+var _skipHistorySave = false;
 
 // ==================== I18N ====================
 function t(cn, en) { return lang === 'cn' ? cn : en; }
@@ -436,12 +437,19 @@ function startQuiz(fresh) {
   if (!fresh) {
     try {
       var saved = JSON.parse(localStorage.getItem('sbti-quiz') || 'null');
-      if (saved && saved.currentQ > 0 && saved.answers) {
+      if (saved && saved.currentQ >= 0 && saved.answers && Object.keys(saved.answers).length > 0) {
         answers = saved.answers;
         currentQ = saved.currentQ;
+        // Restore original quiz DOM (showDrinkQuestions may have overwritten it)
+        if (window._quizHTML) document.getElementById('quiz').innerHTML = window._quizHTML;
         showView('quiz');
         history.replaceState(null,'','#quiz');
-        renderQuestion();
+        // If user was at the end of regular questions and drink gate not yet shown
+        if (currentQ >= QUESTIONS.length - 1 && answers['drink_gate_q1'] === undefined) {
+          showDrinkQuestions();
+        } else {
+          renderQuestion();
+        }
         return;
       }
     } catch(e) {}
@@ -574,6 +582,7 @@ function selectDrinkOption(qid, value, el) {
   var container = el.parentElement;
   container.querySelectorAll('.btn-option').forEach(function(b) { b.classList.remove('selected'); });
   el.classList.add('selected');
+  saveQuizState(); // Save progress so user can resume later
   var btn = document.getElementById('btn-drink-done');
   if (answers['drink_gate_q2'] !== undefined) {
     btn.disabled = false;
@@ -750,7 +759,7 @@ function showResult() {
 
   document.getElementById('result-content').innerHTML = html;
   history.replaceState(null,'','#result/' + r.code);
-  try { localStorage.setItem('sbti-result', JSON.stringify(r)); saveToHistory(r); } catch(e) {}
+  try { localStorage.setItem('sbti-result', JSON.stringify(r)); if (!_skipHistorySave) saveToHistory(r); } catch(e) {}
 }
 
 // ==================== TEST HISTORY ====================
@@ -788,6 +797,20 @@ function saveToHistory(r) {
   } catch(e) {}
 }
 
+function saveAIReportToHistory(report) {
+  loadHistory();
+  // Match by current result's code: find the newest entry with same code (today's)
+  for (var i = testHistory.length - 1; i >= 0; i--) {
+    if (testHistory[i].code === result.code) {
+      testHistory[i].aiReport = report;
+      try {
+        localStorage.setItem('sbti-history', JSON.stringify(testHistory));
+      } catch(e) {}
+      return;
+    }
+  }
+}
+
 function renderHistory() {
   var section = document.getElementById('history-section');
   var list = document.getElementById('history-list');
@@ -810,8 +833,8 @@ function renderHistory() {
     html += '<div class="card p-3 flex items-center gap-3 cursor-pointer hover:shadow-md transition mb-2" onclick="viewHistoryResult(' + entry.timestamp + ')">';
     html += '<span class="text-2xl flex-shrink-0">' + icon + '</span>';
     html += '<div class="flex-1 min-w-0">';
-    html += '<p class="font-bold text-sm truncate">' + entry.code + ' · ' + entry.cn + '</p>';
-    html += '<p class="text-xs text-slate-400 truncate">' + sub + ' · ' + dateStr + '</p>';
+    html += '<p class="font-bold text-sm truncate">' + entry.code + ' · ' + entry.cn + (entry.aiReport ? ' 🤖' : '') + '</p>';
+    html += '<p class="text-xs text-slate-400 truncate">' + sub + ' · ' + dateStr + (entry.aiReport ? ' · ' + t('AI报告', 'AI report') : '') + '</p>';
     html += '</div>';
     html += '<span class="text-slate-300 text-lg flex-shrink-0">→</span>';
     html += '</div>';
@@ -825,6 +848,7 @@ function viewHistoryResult(ts) {
   // Reconstruct result object from history entry
   var o = findOutcome(entry.code);
   if (!o) return;
+  _skipHistorySave = true;
   result = cloneOutcome(o);
   result.similarity = entry.similarity;
   result.isDrunk = entry.isDrunk;
@@ -832,6 +856,23 @@ function viewHistoryResult(ts) {
   result.dimScores = entry.dimScores;
   result.userVector = entry.userVector;
   showResult();
+  // If AI report was saved before, display it
+  if (entry.aiReport) {
+    setTimeout(function() {
+      var btn = document.getElementById('ai-btn');
+      var loading = document.getElementById('ai-loading');
+      var errorDiv = document.getElementById('ai-error');
+      var resultDiv = document.getElementById('ai-result');
+      if (btn) btn.classList.add('hidden');
+      if (loading) loading.classList.add('hidden');
+      if (errorDiv) errorDiv.classList.add('hidden');
+      if (resultDiv) {
+        resultDiv.classList.remove('hidden');
+        resultDiv.innerHTML = '<div class="ai-report text-sm leading-relaxed text-slate-600 dark:text-slate-300">' + renderMarkdown(entry.aiReport) + '</div>';
+      }
+    }, 50);
+  }
+  _skipHistorySave = false;
 }
 
 function clearHistory() {
@@ -1095,6 +1136,8 @@ function generateAIReport() {
       resultDiv.classList.remove('hidden');
       resultDiv.innerHTML = '<div class="ai-report text-sm leading-relaxed text-slate-600 dark:text-slate-300">' + renderMarkdown(data.report) + '</div>';
     }
+    // Save AI report to history entry
+    saveAIReportToHistory(data.report);
     // Scroll to AI result
     var aiCard = document.getElementById('ai-card');
     if (aiCard) aiCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
