@@ -1,0 +1,5 @@
+.DS_Store
+*.swp
+.gstack/
+.vercel/
+web/.vercel/
