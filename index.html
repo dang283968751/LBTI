@@ -852,9 +852,6 @@ function openWikiDetail(code) {
   }
   html += '</div>';
   html += '<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300 mb-4">' + o.desc + '</p>';
-  if (o.pattern) {
-    html += '<p class="text-xs text-slate-400 mb-4">📐 ' + t('模板：', 'Pattern: ') + o.pattern + '</p>';
-  }
   html += '<button onclick="closeModal()" class="w-full py-2 rounded-xl border border-pink-200 dark:border-pink-900/50 text-sm font-semibold text-slate-500">' + t('关闭', 'Close') + '</button>';
 
   document.getElementById('modal-content').innerHTML = html;
