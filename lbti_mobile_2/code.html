@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LBTI - 爱与生活能量测试</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Plus+Jakarta+Sans:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#93f993",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed": "#002105",
+                    "inverse-surface": "#2d3133",
+                    "on-primary-fixed-variant": "#5f3c4d",
+                    "primary-fixed": "#ffd8e7",
+                    "primary-fixed-dim": "#e9bacd",
+                    "surface-variant": "#e0e3e5",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#90cdfd",
+                    "surface": "#f7f9fb",
+                    "secondary-fixed-dim": "#77dc7a",
+                    "outline-variant": "#d2c3c7",
+                    "outline": "#817478",
+                    "on-surface-variant": "#4f4448",
+                    "primary-container": "#f8c8dc",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-tertiary-container": "#18618b",
+                    "on-secondary-container": "#007322",
+                    "on-primary-container": "#765162",
+                    "surface-bright": "#f7f9fb",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "on-background": "#191c1e",
+                    "on-error-container": "#93000a",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#795465",
+                    "tertiary": "#1c648e",
+                    "surface-dim": "#d8dadc",
+                    "on-secondary-fixed-variant": "#005316",
+                    "tertiary-fixed": "#cae6ff",
+                    "secondary-container": "#90f691",
+                    "on-primary-fixed": "#2e1221",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-container": "#eceef0",
+                    "primary": "#795465",
+                    "on-error": "#ffffff",
+                    "secondary": "#006e20",
+                    "inverse-primary": "#e9bacd",
+                    "tertiary-container": "#aedaff",
+                    "on-tertiary-fixed": "#001e30",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#004b70",
+                    "background": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "stack-lg": "32px",
+                    "container-max": "1200px",
+                    "section-gap": "80px",
+                    "margin-mobile": "20px",
+                    "stack-sm": "8px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "label-caps": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-left: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .aurora-bg {
+            background: linear-gradient(135deg, #f7f9fb 0%, #ffd8e7 50%, #cae6ff 100%);
+            background-size: 400% 400%;
+            animation: aurora-animation 15s ease infinite;
+        }
+
+        @keyframes aurora-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #795465 0%, #1c648e 100%);
+            box-shadow: 0 4px 15px rgba(121, 84, 101, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-gradient:hover {
+            box-shadow: 0 8px 25px rgba(121, 84, 101, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md aurora-bg min-h-screen selection:bg-primary-container">
+<!-- Top AppBar (from Shared Components) -->
+<header class="fixed top-0 w-full z-50 bg-white/60 dark:bg-black/40 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/5">
+<div class="flex justify-between items-center px-gutter py-4 w-full max-w-container-max mx-auto">
+<span class="font-headline-md text-headline-md tracking-tighter text-primary dark:text-primary-fixed-dim">LBTI</span>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 px-margin-mobile flex flex-col items-center min-h-screen overflow-x-hidden">
+<!-- Hero Section -->
+<section class="w-full text-center mb-stack-lg flex flex-col items-center">
+<div class="relative mb-stack-md w-full max-w-[280px]">
+<div class="absolute -inset-4 bg-white/30 rounded-full blur-3xl"></div>
+<div class="relative w-48 h-48 mx-auto overflow-hidden rounded-full glass-card flex items-center justify-center floating">
+<img class="w-full h-full object-cover opacity-80" data-alt="A macro shot of a single crystalline water droplet reflecting a soft pink and blue morning sky. The image is clean, minimalist, and healing, with a shallow depth of field focusing on the iridescent surface of the drop. The background is a soft blur of pastel gradients, perfectly matching a premium, serene health and wellness UI design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw7SnTY71H7AArp_h2WFGST_Ys8vAn6hNzV5rJJbM1e4tcx_kfVhU2z3gGhvAiUVt0-bK6wSzOvqe9M2EgnKrGSt-SzLQ6AlmOSR9uMHuV7x2mHMi_AfXuX6_7bPhgT46T4A07bCsTxQv1JG5qrKL6RNkVdGZ0cqIvkpxE5URyPC-tE-185ZJ4F6xidyxYHnKTE1_j01UnbvbL7NxJ6DsjsO7PM4VtHGpbm3fPOdpyhmY4zW57wDrJ70Mf1Fg8UKnhyHNVRIjPcT3k"/>
+</div>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary mb-stack-sm tracking-tight">
+                LBTI 爱与生活能量测试
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[320px] mx-auto leading-relaxed opacity-80">
+                开启一场向内的探索，解码你的情感模式与生命律动。
+            </p>
+</section>
+<!-- Feature Cards (Asymmetric Bento-lite layout) -->
+<section class="w-full grid grid-cols-1 gap-stack-md mb-stack-lg max-w-md">
+<!-- Card 1 -->
+<div class="glass-card rounded-xl p-gutter flex items-start gap-4 transition-transform hover:scale-[1.02] duration-300">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-1 text-[18px]">Emotional Activation</h3>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">
+                        探索你对外界情感共鸣的敏感度与回响频率。
+                    </p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card rounded-xl p-gutter flex items-start gap-4 transition-transform hover:scale-[1.02] duration-300">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">cycle</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-tertiary mb-1 text-[18px]">Life Rhythm</h3>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">
+                        定义你独特的生命步调，在快慢之间找寻平衡点。
+                    </p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card rounded-xl p-gutter flex items-start gap-4 transition-transform hover:scale-[1.02] duration-300">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-secondary mb-1 text-[18px]">Boundary</h3>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">
+                        建立健康的心理边界，在连接与独立中游刃有余。
+                    </p>
+</div>
+</div>
+</section>
+<!-- CTA Button -->
+<div class="w-full max-w-md px-margin-mobile mb-section-gap">
+<button class="btn-gradient w-full py-5 rounded-full text-white font-label-caps text-label-caps tracking-widest uppercase flex items-center justify-center gap-2 group">
+                Start Exploration
+                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Bar (from Shared Components) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface/80 dark:bg-surface-container-highest/80 backdrop-blur-2xl rounded-t-xl border-t border-white/40 shadow-[0_-4px_20px_rgba(121,84,101,0.05)]">
+<!-- Tab 1: Active -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-6 py-1 transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="font-label-caps text-label-caps mt-0.5">Journey</span>
+</a>
+<!-- Tab 2 -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:bg-primary/5 p-2 rounded-full transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps mt-0.5">Insights</span>
+</a>
+<!-- Tab 3 -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:bg-primary/5 p-2 rounded-full transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">self_care</span>
+<span class="font-label-caps text-label-caps mt-0.5">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for the CTA button
+        const ctaBtn = document.querySelector('.btn-gradient');
+        ctaBtn.addEventListener('mousedown', () => {
+            ctaBtn.style.transform = 'scale(0.98)';
+        });
+        ctaBtn.addEventListener('mouseup', () => {
+            ctaBtn.style.transform = 'scale(1)';
+        });
+
+        // Background subtle parallax on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroImage = document.querySelector('.floating');
+            if (heroImage) {
+                heroImage.style.transform = `translateY(${scrolled * 0.15}px)`;
+            }
+        });
+    </script>
+</body></html>
