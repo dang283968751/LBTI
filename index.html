@@ -721,6 +721,20 @@ function showResult() {
   html += '<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">' + r.desc + '</p>';
   html += '</div>';
 
+  // AI Deep Interpretation
+  html += '<div class="card p-6 mb-4" id="ai-card">';
+  html += '<h3 class="font-bold mb-2">🤖 ' + t('AI 深度解读', 'AI Deep Interpretation') + '</h3>';
+  html += '<p class="text-xs text-slate-400 mb-4">' + t('基于你的 15 维人格分数，AI 为你生成专属深度解读报告', 'AI generates a personalized deep report based on your 15 dimensions') + '</p>';
+  html += '<button onclick="generateAIReport()" id="ai-btn" class="btn-primary w-full py-3 rounded-2xl font-semibold">✨ ' + t('生成 AI 报告', 'Generate AI Report') + '</button>';
+  html += '<div id="ai-loading" class="hidden text-center py-6">';
+  html += '<svg class="animate-spin h-8 w-8 text-pink-500 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>';
+  html += '<p class="text-pink-500 font-semibold">' + t('🤖 AI 正在分析你的人格...', '🤖 AI is analyzing your personality...') + '</p>';
+  html += '<p class="text-xs text-slate-400 mt-1">' + t('预计需要 10-20 秒', 'Estimated 10-20 seconds') + '</p>';
+  html += '</div>';
+  html += '<div id="ai-result" class="hidden mt-4"></div>';
+  html += '<div id="ai-error" class="hidden mt-4 text-center"></div>';
+  html += '</div>';
+
   // Share buttons
   html += '<div class="flex gap-3 mb-6">';
   html += '<button onclick="generateShareCard()" class="flex-1 py-3 rounded-2xl font-semibold text-white btn-primary">📸 ' + t('生成分享卡片', 'Share Card') + '</button>';
@@ -1022,6 +1036,132 @@ function copyShareLink() {
   }
 }
 
+// ==================== AI REPORT ====================
+function generateAIReport() {
+  if (!result || !DIMENSIONS) return;
+  var btn = document.getElementById('ai-btn');
+  var loading = document.getElementById('ai-loading');
+  var resultDiv = document.getElementById('ai-result');
+  var errorDiv = document.getElementById('ai-error');
+
+  // Show loading
+  if (btn) btn.classList.add('hidden');
+  if (loading) loading.classList.remove('hidden');
+  if (resultDiv) { resultDiv.classList.add('hidden'); resultDiv.innerHTML = ''; }
+  if (errorDiv) { errorDiv.classList.add('hidden'); errorDiv.innerHTML = ''; }
+
+  // Build dimension details for the prompt
+  var dimDetails = [];
+  var dimOrder = DIMENSIONS.order;
+  dimOrder.forEach(function(dim) {
+    var meta = DIMENSIONS.meta[dim];
+    var level = result.dimScores[dim];
+    var exp = (DIMENSIONS.explanations[dim] && DIMENSIONS.explanations[dim][level]) ? DIMENSIONS.explanations[dim][level] : '';
+    dimDetails.push({
+      dim: dim,
+      name: meta.name,
+      model: meta.model,
+      level: level,
+      explanation: exp
+    });
+  });
+
+  fetch('/api/deepseek', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      code: result.code,
+      cn: result.cn,
+      intro: result.intro,
+      dimDetails: dimDetails,
+      lang: lang
+    })
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  })
+  .then(function(data) {
+    if (loading) loading.classList.add('hidden');
+    if (data.error) {
+      if (errorDiv) {
+        errorDiv.classList.remove('hidden');
+        errorDiv.innerHTML = '<p class="text-red-400 text-sm">❌ ' + data.error + '</p>' +
+          '<button onclick="generateAIReport()" class="mt-2 text-pink-500 underline text-sm">' + t('重试', 'Retry') + '</button>';
+      }
+      return;
+    }
+    if (resultDiv) {
+      resultDiv.classList.remove('hidden');
+      resultDiv.innerHTML = '<div class="ai-report text-sm leading-relaxed text-slate-600 dark:text-slate-300">' + renderMarkdown(data.report) + '</div>';
+    }
+    // Scroll to AI result
+    var aiCard = document.getElementById('ai-card');
+    if (aiCard) aiCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  })
+  .catch(function(err) {
+    if (loading) loading.classList.add('hidden');
+    if (errorDiv) {
+      errorDiv.classList.remove('hidden');
+      errorDiv.innerHTML = '<p class="text-red-400 text-sm">❌ ' + t('AI 服务暂时不可用，请稍后重试', 'AI service unavailable, please try later') + '</p>' +
+        '<button onclick="generateAIReport()" class="mt-2 text-pink-500 underline text-sm">' + t('重试', 'Retry') + '</button>';
+    }
+    console.error('AI report failed:', err);
+  });
+}
+
+function renderMarkdown(md) {
+  if (!md) return '';
+  // Escape HTML first
+  var html = md
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Headings: ## → h3, ### → h4
+  html = html.replace(/^### (.+)$/gm, '<h4 class="font-bold text-base mt-4 mb-2 text-pink-500">$1</h4>');
+  html = html.replace(/^## (.+)$/gm, '<h3 class="font-bold text-lg mt-5 mb-3 text-pink-600">$1</h3>');
+
+  // Bold: **text**
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
+
+  // Italic: *text*
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Numbered lists: group consecutive "1. item" lines
+  html = html.replace(/((?:^\d+\. .+\n?)+)/gm, function(match) {
+    var items = match.trim().split('\n').map(function(line) {
+      return '<li class="ml-4 mb-1">' + line.replace(/^\d+\.\s*/, '') + '</li>';
+    }).join('\n');
+    return '<ol class="list-decimal ml-4 my-2 space-y-1">' + items + '</ol>';
+  });
+
+  // Unordered lists: group consecutive "- item" lines
+  html = html.replace(/((?:^- .+\n?)+)/gm, function(match) {
+    var items = match.trim().split('\n').map(function(line) {
+      return '<li class="ml-4 mb-1">' + line.replace(/^-\s*/, '') + '</li>';
+    }).join('\n');
+    return '<ul class="list-disc ml-4 my-2 space-y-1">' + items + '</ul>';
+  });
+
+  // Paragraphs: double newlines
+  html = html.replace(/\n\n+/g, '</p><p class="mb-3">');
+
+  // Single newlines → <br>
+  html = html.replace(/\n/g, '<br>');
+
+  // Wrap in opening/closing paragraph
+  html = '<p class="mb-3">' + html + '</p>';
+
+  // Clean up empty paragraphs
+  html = html.replace(/<p class="mb-3"><\/p>/g, '');
+  html = html.replace(/<p class="mb-3">(\s*<br>\s*)+<\/p>/g, '');
+  html = html.replace(/<p class="mb-3">(\s*<(h[34]|ul|ol)[ >])/g, '$1');
+  html = html.replace(/(<\/(h[34]|ul|ol)>)\s*<\/p>/g, '$1');
+
+  return html;
+}
+
 // ==================== UTILS ====================
 function roundRectCanvas(ctx, x, y, w, h, r) {
   ctx.beginPath();
@@ -1126,5 +1266,7 @@ async function incrementTestCounter() {
 document.addEventListener('DOMContentLoaded', init);
 </script>
 
+<!-- Tailwind CDN safelist: classes used in dynamically generated content (AI report etc.) -->
+<div class="hidden animate-spin animate-pulse list-disc list-decimal space-y-1 my-2 ml-4 text-pink-600 text-pink-500 text-base text-lg"></div>
 </body>
 </html>
