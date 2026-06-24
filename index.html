@@ -187,6 +187,13 @@
       <p class="text-sm text-slate-500 mb-3 i18n" data-cn="👀 不想做测试？直接看全部 27 种人格 ↓" data-en="👀 Skip the quiz? Browse all 27 types ↓"></p>
       <button onclick="showWiki()" class="text-pink-500 font-semibold text-sm hover:underline i18n" data-cn="📖 查看完整图鉴 →" data-en="📖 View Full Gallery →"></button>
     </div>
+
+    <!-- Test History -->
+    <div id="history-section" class="hidden mt-8 pt-6 border-t border-pink-100 dark:border-pink-900/30">
+      <p class="text-sm text-slate-500 mb-3 i18n" data-cn="📋 你的测试记录" data-en="📋 Your Test Records"></p>
+      <div id="history-list"></div>
+      <button onclick="clearHistory()" class="mt-3 text-xs text-slate-400 hover:text-pink-500 underline i18n" data-cn="清空记录" data-en="Clear history"></button>
+    </div>
   </section>
 
   <!-- ====== QUIZ SECTION ====== -->
@@ -262,6 +269,7 @@ var currentQ = 0;
 var answers = {};
 var result = null;
 var lang = 'cn';
+var testHistory = [];
 
 // ==================== I18N ====================
 function t(cn, en) { return lang === 'cn' ? cn : en; }
@@ -291,6 +299,7 @@ function refreshI18n() {
   if (currentView === 'wiki') buildWikiGrid();
   if (currentView === 'quiz') renderQuestion();
   if (currentView === 'result' && result) showResult();
+  if (currentView === 'landing') renderHistory();
 }
 
 // ==================== IMAGE PATH FIX ====================
@@ -360,6 +369,7 @@ async function init() {
   window._quizHTML = document.getElementById('quiz').innerHTML;
 
   if (localStorage.getItem('sbti-lang') === 'en') { lang = 'en'; switchLang(); }
+  loadHistory();
   refreshI18n();
   if (isWechat()) document.getElementById('wechat-banner').classList.remove('hidden');
   handleHash();
@@ -383,7 +393,7 @@ function showView(id) {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function backToLanding() { showView('landing'); history.replaceState(null,'','#'); }
+function backToLanding() { showView('landing'); renderHistory(); history.replaceState(null,'','#'); }
 
 function showWiki() { showView('wiki'); buildWikiGrid(); history.replaceState(null,'','#wiki'); }
 
@@ -391,7 +401,7 @@ function showWiki() { showView('wiki'); buildWikiGrid(); history.replaceState(nu
 function startQuiz(fresh) {
   if (!fresh) {
     try {
-      var saved = JSON.parse(sessionStorage.getItem('sbti-quiz') || 'null');
+      var saved = JSON.parse(localStorage.getItem('sbti-quiz') || 'null');
       if (saved && saved.currentQ > 0 && saved.answers) {
         answers = saved.answers;
         currentQ = saved.currentQ;
@@ -405,8 +415,8 @@ function startQuiz(fresh) {
   answers = {};
   result = null;
   currentQ = 0;
-  sessionStorage.removeItem('sbti-quiz');
-  sessionStorage.removeItem('sbti-result');
+  localStorage.removeItem('sbti-quiz');
+  localStorage.removeItem('sbti-result');
   // Restore original quiz DOM (showDrinkQuestions may have overwritten it)
   if (window._quizHTML) document.getElementById('quiz').innerHTML = window._quizHTML;
   showView('quiz');
@@ -486,7 +496,7 @@ function nextQuestion() {
 
 function saveQuizState() {
   try {
-    sessionStorage.setItem('sbti-quiz', JSON.stringify({ currentQ: currentQ, answers: answers, view: 'quiz' }));
+    localStorage.setItem('sbti-quiz', JSON.stringify({ currentQ: currentQ, answers: answers, view: 'quiz' }));
   } catch(e) {}
 }
 
@@ -541,7 +551,7 @@ function selectDrinkOption(qid, value, el) {
 
 // ==================== SCORING ====================
 function finishQuiz() {
-  sessionStorage.removeItem('sbti-quiz');
+  localStorage.removeItem('sbti-quiz');
   incrementTestCounter();
   var dimOrder = DIMENSIONS.order;
   var dimScores = {};
@@ -691,14 +701,110 @@ function showResult() {
 
   document.getElementById('result-content').innerHTML = html;
   history.replaceState(null,'','#result/' + r.code);
-  try { sessionStorage.setItem('sbti-result', JSON.stringify(r)); } catch(e) {}
+  try { localStorage.setItem('sbti-result', JSON.stringify(r)); saveToHistory(r); } catch(e) {}
+}
+
+// ==================== TEST HISTORY ====================
+function loadHistory() {
+  try {
+    var saved = localStorage.getItem('sbti-history');
+    testHistory = saved ? JSON.parse(saved) : [];
+  } catch(e) { testHistory = []; }
+}
+
+function saveToHistory(r) {
+  loadHistory(); // ensure fresh
+  // Remove duplicate by code+timestamp if same timestamp already exists
+  var entry = {
+    code: r.code,
+    cn: r.cn,
+    intro: r.intro,
+    similarity: r.similarity,
+    isDrunk: !!r.isDrunk,
+    isFallback: !!r.isFallback,
+    dimScores: r.dimScores,
+    userVector: r.userVector,
+    timestamp: Date.now()
+  };
+  // Remove old entry with same code if it was from today (dedup within same day)
+  var today = new Date().toDateString();
+  testHistory = testHistory.filter(function(e) {
+    return new Date(e.timestamp).toDateString() !== today || e.code !== entry.code;
+  });
+  testHistory.push(entry);
+  // Keep max 20 entries
+  if (testHistory.length > 20) testHistory = testHistory.slice(-20);
+  try {
+    localStorage.setItem('sbti-history', JSON.stringify(testHistory));
+  } catch(e) {}
+}
+
+function renderHistory() {
+  var section = document.getElementById('history-section');
+  var list = document.getElementById('history-list');
+  if (!section || !list) return;
+  if (!testHistory.length) {
+    section.classList.add('hidden');
+    return;
+  }
+  section.classList.remove('hidden');
+  // Show most recent first
+  var entries = testHistory.slice().reverse();
+  var html = '';
+  entries.forEach(function(entry) {
+    var date = new Date(entry.timestamp);
+    var dateStr = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+    var icon = entry.isDrunk ? '🍶' : '🎭';
+    var sub = entry.isDrunk
+      ? t('隐藏人格已激活', 'Hidden type')
+      : t('匹配度 ', 'Match: ') + entry.similarity + '%';
+    html += '<div class="card p-3 flex items-center gap-3 cursor-pointer hover:shadow-md transition mb-2" onclick="viewHistoryResult(' + entry.timestamp + ')">';
+    html += '<span class="text-2xl flex-shrink-0">' + icon + '</span>';
+    html += '<div class="flex-1 min-w-0">';
+    html += '<p class="font-bold text-sm truncate">' + entry.code + ' · ' + entry.cn + '</p>';
+    html += '<p class="text-xs text-slate-400 truncate">' + sub + ' · ' + dateStr + '</p>';
+    html += '</div>';
+    html += '<span class="text-slate-300 text-lg flex-shrink-0">→</span>';
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+
+function viewHistoryResult(ts) {
+  var entry = testHistory.find(function(e) { return e.timestamp === ts; });
+  if (!entry) return;
+  // Reconstruct result object from history entry
+  var o = findOutcome(entry.code);
+  if (!o) return;
+  result = cloneOutcome(o);
+  result.similarity = entry.similarity;
+  result.isDrunk = entry.isDrunk;
+  result.isFallback = entry.isFallback;
+  result.dimScores = entry.dimScores;
+  result.userVector = entry.userVector;
+  showResult();
+}
+
+function clearHistory() {
+  if (!confirm(t('确定清空所有测试记录？', 'Clear all test records?'))) return;
+  testHistory = [];
+  localStorage.removeItem('sbti-history');
+  renderHistory();
+  toast(t('记录已清空', 'History cleared'));
 }
 
 function restoreResult() {
   try {
-    var saved = sessionStorage.getItem('sbti-result');
+    var saved = localStorage.getItem('sbti-result');
     if (saved) { result = JSON.parse(saved); showResult(); return; }
   } catch(e) {}
+  // Also check history for the code in the URL hash
+  var hashCode = location.hash.replace('#result/', '').replace('#result', '');
+  if (hashCode && testHistory.length) {
+    loadHistory();
+    var entry = testHistory.slice().reverse().find(function(e) { return e.code === hashCode; });
+    if (entry) { viewHistoryResult(entry.timestamp); return; }
+  }
   backToLanding();
 }
 
