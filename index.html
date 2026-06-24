@@ -561,16 +561,22 @@ function finishQuiz() {
     return;
   }
 
-  // Match 25 normal types
-  var best = null, bestDist = Infinity;
+  // Match 25 normal types — score-difference distance (L=1,M=2,H=3)
+  var toScore = function(v) { return v === 'L' ? 1 : v === 'M' ? 2 : 3; };
+  var userScores = userVector.map(toScore);
+  var best = null, bestDist = Infinity, exactHits = 0;
   PATTERNS.normal_types.forEach(function(t) {
     var pattern = t.pattern.replace(/-/g, '').split('');
-    var dist = 0;
-    for (var i = 0; i < 15; i++) { if (userVector[i] !== pattern[i]) dist++; }
-    if (dist < bestDist) { bestDist = dist; best = t; }
+    var dist = 0, hits = 0;
+    for (var i = 0; i < 15; i++) {
+      var ps = toScore(pattern[i]);
+      dist += Math.abs(userScores[i] - ps);
+      if (userVector[i] === pattern[i]) hits++;
+    }
+    if (dist < bestDist) { bestDist = dist; best = t; exactHits = hits; }
   });
 
-  var similarity = Math.round((1 - bestDist / 30) * 100);
+  var similarity = Math.max(0, Math.round((1 - bestDist / 30) * 100));
 
   if (similarity < 60) {
     result = cloneOutcome(findOutcome('HHHH'));
