@@ -285,7 +285,7 @@ function refreshI18n() {
     el.placeholder = lang === 'cn' ? el.getAttribute('data-cn-placeholder') : el.getAttribute('data-en-placeholder');
   });
   // Update nav button text
-  updateNavButtons();
+  if (currentView === 'quiz') updateNavButtons();
   updateTestCounter();
   // Refresh current view
   if (currentView === 'wiki') buildWikiGrid();
@@ -679,7 +679,7 @@ function showResult() {
 
   // Actions
   html += '<div class="flex gap-3">';
-  html += '<button onclick="startQuiz()" class="flex-1 py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-slate-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">🔄 ' + t('重新测试', 'Retake') + '</button>';
+  html += '<button onclick="startQuiz(true)" class="flex-1 py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-slate-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">🔄 ' + t('重新测试', 'Retake') + '</button>';
   html += '<button onclick="showWiki()" class="flex-1 py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-slate-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">📖 ' + t('查看全部人格', 'All Types') + '</button>';
   html += '</div>';
 
