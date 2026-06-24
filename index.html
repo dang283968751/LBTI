@@ -1,762 +1,1130 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="scroll-smooth">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-<title>LBTI · 爱与生活能量测试</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#fdf2f8">
+<title>SBTI 人格测试 · 测测你是什么人格</title>
+<meta name="description" content="🔥 火爆全网的 SBTI 人格测试！30 道有趣题目，测出你的专属人格。27 种结局，你是拿捏者？尤物？还是隐藏酒鬼？快来测！">
+<meta name="keywords" content="SBTI,人格测试,心理测试,性格测试,MBTI,趣味测试,小红书">
+<meta property="og:title" content="SBTI 人格测试 · 测测你是什么人格">
+<meta property="og:description" content="🔥 火爆全网的 SBTI 人格测试！30 道有趣题目，27 种结局等你来测。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://sbti-wiki.pages.dev/images/CTRL.png">
+<meta property="og:image:width" content="600">
+<meta property="og:image:height" content="600">
+<meta property="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎭%3C/text%3E%3C/svg%3E">
+<!-- Tailwind CDN: dynamic script, SRI not applicable -->
+<script src="https://cdn.tailwindcss.com"></script>
 <script>
-tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      colors: {
-        "primary":"#795465","on-primary":"#ffffff","primary-container":"#f8c8dc","on-primary-container":"#765162",
-        "primary-fixed":"#ffd8e7","primary-fixed-dim":"#e9bacd","on-primary-fixed":"#2e1221","on-primary-fixed-variant":"#5f3c4d",
-        "secondary":"#006e20","on-secondary":"#ffffff","secondary-container":"#90f691","on-secondary-container":"#007322",
-        "secondary-fixed":"#93f993","secondary-fixed-dim":"#77dc7a","on-secondary-fixed":"#002105","on-secondary-fixed-variant":"#005316",
-        "tertiary":"#1c648e","on-tertiary":"#ffffff","tertiary-container":"#aedaff","on-tertiary-container":"#18618b",
-        "tertiary-fixed":"#cae6ff","tertiary-fixed-dim":"#90cdfd","on-tertiary-fixed":"#001e30","on-tertiary-fixed-variant":"#004b70",
-        "surface":"#f7f9fb","surface-dim":"#d8dadc","surface-bright":"#f7f9fb","surface-tint":"#795465",
-        "surface-container":"#eceef0","surface-container-low":"#f2f4f6","surface-container-lowest":"#ffffff",
-        "surface-container-high":"#e6e8ea","surface-container-highest":"#e0e3e5","surface-variant":"#e0e3e5",
-        "background":"#f7f9fb","on-background":"#191c1e","on-surface":"#191c1e","on-surface-variant":"#4f4448",
-        "outline":"#817478","outline-variant":"#d2c3c7","inverse-surface":"#2d3133","inverse-on-surface":"#eff1f3",
-        "inverse-primary":"#e9bacd","error":"#ba1a1a","on-error":"#ffffff","error-container":"#ffdad6","on-error-container":"#93000a",
-        "influence":"#c98b3a","influence-container":"#fce4c8"
-      },
-      borderRadius: { DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px" },
-      spacing: { "gutter":"24px","margin-mobile":"20px","stack-sm":"8px","stack-md":"16px","stack-lg":"32px","section-gap":"80px","container-max":"1200px" },
-      fontFamily: {
-        "display-lg":["Playfair Display"],"display-lg-mobile":["Playfair Display"],"headline-md":["Playfair Display"],
-        "body-lg":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-caps":["Plus Jakarta Sans"]
-      },
-      fontSize: {
-        "display-lg":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"700"}],
-        "display-lg-mobile":["32px",{lineHeight:"40px",fontWeight:"700"}],
-        "headline-md":["24px",{lineHeight:"32px",fontWeight:"600"}],
-        "body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],
-        "body-md":["16px",{lineHeight:"24px",fontWeight:"400"}],
-        "label-caps":["12px",{lineHeight:"16px",letterSpacing:"0.1em",fontWeight:"600"}]
-      }
-    }
-  }
-}
+  tailwind.config = { darkMode: 'class' };
+  (function () {
+    var s = localStorage.getItem('sbti-theme');
+    var d = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (s ? s === 'dark' : d) document.documentElement.classList.add('dark');
+  })();
 </script>
+
 <style>
   :root {
-    --dim-l: #c98b3a; /* Love - warm gold */
-    --dim-b: #1c648e; /* Boundary - cool teal */
-    --dim-t: #006e20; /* Tempo - sage green */
-    --dim-i: #795465; /* Influence - rose pink */
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+    --c-pink: #f472b6;
+    --c-rose: #fb7185;
+    --c-bg: #fdf2f8;
+    --c-card: #ffffff;
+    --c-text: #4a2040;
+    --c-sub: #9d7a8f;
   }
-
+  .dark {
+    --c-bg: #1a1025;
+    --c-card: #241835;
+    --c-text: #f0dce8;
+    --c-sub: #b095a8;
+  }
   body {
-    background: #f7f9fb;
-    color: #191c1e;
-    min-height: 100dvh;
-    overflow-x: hidden;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--c-bg);
+    color: var(--c-text);
+    transition: background .3s, color .3s;
+    overscroll-behavior: none;
   }
-
-  .aurora-bg {
-    position: fixed; inset: 0; z-index: -1;
-    background:
-      radial-gradient(circle at 0% 0%, #ffd8e7 0%, transparent 45%),
-      radial-gradient(circle at 100% 0%, #cae6ff 0%, transparent 45%),
-      radial-gradient(circle at 100% 100%, #93f993 0%, transparent 45%),
-      radial-gradient(circle at 0% 100%, #f7f9fb 0%, transparent 45%);
-    background-size: 200% 200%;
-    animation: aurora-drift 18s ease infinite;
-    opacity: 0.45;
+  .card {
+    background: var(--c-card);
+    border-radius: 20px;
+    box-shadow: 0 2px 16px rgba(244,114,182,.08);
+    transition: transform .15s, box-shadow .15s;
   }
-  @keyframes aurora-drift {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-    100% { background-position: 0% 0%; }
+  .card:active { transform: scale(.98); }
+  .btn-primary {
+    background: linear-gradient(135deg, #f472b6, #fb7185);
+    color: #fff;
+    border-radius: 16px;
+    font-weight: 600;
+    transition: opacity .15s, transform .15s;
+    box-shadow: 0 4px 16px rgba(244,114,182,.3);
   }
-
-  .glass {
-    background: rgba(255,255,255,0.55);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.5);
-  }
-  .glass-solid {
-    background: rgba(255,255,255,0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.5);
-  }
-
-  /* Option buttons */
-  .opt-btn {
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  .btn-primary:active { transform: scale(.96); opacity: .85; }
+  .btn-option {
+    background: var(--c-card);
+    border: 2px solid #fce7f3;
+    border-radius: 16px;
+    padding: 16px 20px;
+    font-size: 15px;
+    text-align: left;
+    transition: all .15s;
     cursor: pointer;
-    position: relative;
-  }
-  .opt-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.8); }
-  .opt-btn.selected {
-    background: #795465 !important;
-    color: #fff !important;
-    border-color: #795465 !important;
-    box-shadow: 0 4px 20px rgba(121,84,101,0.25);
-  }
-
-  /* View transitions */
-  .view {
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .view.hidden {
-    display: none;
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  .view.active {
     display: flex;
-    opacity: 1;
-    transform: translateY(0);
+    align-items: center;
+    gap: 12px;
+    min-height: 56px;
   }
-
-  /* Progress bar */
-  .progress-fill {
-    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-    background: linear-gradient(90deg, #c98b3a, #795465, #1c648e, #006e20);
-    background-size: 300% 100%;
-    animation: progress-shift 3s linear infinite;
+  .dark .btn-option { border-color: #3d2a48; }
+  .btn-option:active { border-color: var(--c-pink); background: #fdf2f8; }
+  .btn-option.selected { border-color: var(--c-pink); background: #fdf2f8; }
+  .dark .btn-option.selected { background: #3d1a38; }
+  .btn-option .emoji { font-size: 28px; flex-shrink: 0; }
+  .progress-bar { height: 6px; border-radius: 3px; background: #fce7f3; overflow: hidden; }
+  .dark .progress-bar { background: #3d2a48; }
+  .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #f472b6, #fb7185); transition: width .3s ease; }
+  .grid-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
   }
-  @keyframes progress-shift {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 300% 50%; }
+  @media (min-width: 640px) { .grid-gallery { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; } }
+  .gallery-card {
+    background: var(--c-card);
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 2px 12px rgba(0,0,0,.04);
   }
-
-  /* Dimension bar animation */
-  .dim-bar-fill {
-    transition: width 1.4s cubic-bezier(0.22,1,0.36,1);
+  .gallery-card:active { transform: scale(.96); }
+  .gallery-card img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #fdf2f8; }
+  .dark .gallery-card img { background: #1a1025; }
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 50;
+    background: rgba(0,0,0,.4);
+    display: flex; align-items: flex-end; justify-content: center;
+    animation: fadeIn .2s;
   }
-
-  /* Floating blobs */
-  .blob {
-    position: fixed; border-radius: 50%; pointer-events: none; z-index: -1;
-    filter: blur(80px); opacity: 0.35;
-    animation: blob-float 14s ease-in-out infinite;
+  .modal-sheet {
+    background: var(--c-card);
+    border-radius: 24px 24px 0 0;
+    width: 100%; max-width: 500px; max-height: 85vh;
+    overflow-y: auto;
+    padding: 24px 20px;
+    padding-bottom: calc(24px + var(--safe-bottom));
+    animation: slideUp .3s ease-out;
   }
-  .blob-2 { animation-delay: -5s; animation-duration: 18s; }
-  @keyframes blob-float {
-    0%,100% { transform: translate(0,0) scale(1); }
-    33% { transform: translate(30px,-30px) scale(1.05); }
-    66% { transform: translate(-20px,20px) scale(0.95); }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #1a1025; color: #fff; padding: 10px 24px; border-radius: 12px;
+    font-size: 14px; z-index: 100;
+    animation: toastIn .25s, toastOut .25s 1.75s forwards;
   }
-
-  /* Stability gauge */
-  .gauge-ring {
-    stroke-dasharray: 251.2;
-    stroke-dashoffset: 251.2;
-    transition: stroke-dashoffset 1.6s cubic-bezier(0.22,1,0.36,1);
-  }
-
-  /* Result card for sharing */
-  .share-card {
-    background: linear-gradient(160deg, rgba(255,255,255,0.7) 0%, rgba(247,249,251,0.85) 100%);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(255,255,255,0.5);
-  }
-
-  /* Type badge glow */
-  .type-glow {
-    filter: drop-shadow(0 0 24px rgba(121,84,101,0.15));
-  }
-
-  /* Fade in sequence */
-  .fade-seq > * { opacity: 0; animation: fade-up 0.6s ease forwards; }
-  .fade-seq > *:nth-child(1) { animation-delay: 0.1s; }
-  .fade-seq > *:nth-child(2) { animation-delay: 0.2s; }
-  .fade-seq > *:nth-child(3) { animation-delay: 0.3s; }
-  .fade-seq > *:nth-child(4) { animation-delay: 0.4s; }
-  .fade-seq > *:nth-child(5) { animation-delay: 0.5s; }
-  .fade-seq > *:nth-child(6) { animation-delay: 0.6s; }
-  @keyframes fade-up {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Scrollbar hide */
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-  /* Pulse dot for calculating */
-  .pulse-dot {
-    width: 12px; height: 12px; border-radius: 50%; background: #795465;
-    animation: pulse-bounce 0.6s ease infinite alternate;
-  }
-  .pulse-dot:nth-child(2) { animation-delay: 0.2s; }
-  .pulse-dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes pulse-bounce {
-    to { transform: translateY(-16px); opacity: 0.4; }
-  }
+  @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(12px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  @keyframes toastOut { to { opacity: 0; transform: translateX(-50%) translateY(12px); } }
+  .level-H { background: #ecfdf5; color: #059669; }
+  .level-M { background: #fef3c7; color: #b45309; }
+  .level-L { background: #f1f5f9; color: #64748b; }
+  .dark .level-H { background: #064e3b; color: #6ee7b7; }
+  .dark .level-M { background: #451a03; color: #fbbf24; }
+  .dark .level-L { background: #1e293b; color: #94a3b8; }
+  .no-scroll { overflow: hidden; }
 </style>
 </head>
-<body class="font-body-md text-on-surface">
 
-<!-- Background -->
-<div class="aurora-bg"></div>
-<div class="blob w-80 h-80 top-1/4 -left-20" style="background:#ffd8e7;"></div>
-<div class="blob blob-2 w-96 h-96 bottom-1/4 -right-24" style="background:#cae6ff;"></div>
+<body class="min-h-screen" style="padding-bottom:var(--safe-bottom)">
 
-<!-- ====== VIEW 1: LANDING ====== -->
-<section id="view-landing" class="view active flex-col items-center justify-center min-h-dvh px-margin-mobile text-center relative z-10">
-  <div class="mb-8 inline-flex items-center px-5 py-2 glass rounded-full">
-    <span class="font-label-caps text-label-caps text-primary tracking-[0.2em]">Ethereal Discovery</span>
-  </div>
+<!-- WeChat banner -->
+<div id="wechat-banner" class="hidden fixed top-0 left-0 right-0 z-50 bg-amber-50 dark:bg-amber-950/90 border-b border-amber-200 dark:border-amber-900/50 p-3 text-center text-xs text-amber-800 dark:text-amber-200" style="padding-top:calc(env(safe-area-inset-top) + 8px)">
+  📱 <span class="i18n" data-cn="微信内体验受限，点右上角「在浏览器打开」体验更好" data-en="Tap menu → Open in Browser for full experience"></span>
+</div>
 
-  <h1 class="font-display-lg-mobile text-display-lg-mobile md:text-5xl text-on-surface mb-4 leading-tight">
-    LBTI<br/>爱与生活能量测试
-  </h1>
-
-  <p class="font-body-lg text-body-lg text-on-surface-variant max-w-md mb-10 opacity-75 leading-relaxed">
-    4 个维度 · 16 种能量类型<br/>
-    用 24 道题，画出你的内在光谱
-  </p>
-
-  <button onclick="startQuiz()"
-    class="bg-primary text-on-primary font-label-caps text-label-caps px-12 py-4 rounded-full flex items-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 active:scale-95 transition-all">
-    开始探索
-    <span class="text-lg">→</span>
-  </button>
-
-  <!-- Dimension preview chips -->
-  <div class="grid grid-cols-4 gap-3 mt-14 max-w-sm w-full opacity-60">
-    <div class="flex flex-col items-center gap-1"><span class="text-2xl">💗</span><span class="text-[10px] tracking-widest uppercase">Love</span></div>
-    <div class="flex flex-col items-center gap-1"><span class="text-2xl">🛡️</span><span class="text-[10px] tracking-widest uppercase">Boundary</span></div>
-    <div class="flex flex-col items-center gap-1"><span class="text-2xl">🌿</span><span class="text-[10px] tracking-widest uppercase">Tempo</span></div>
-    <div class="flex flex-col items-center gap-1"><span class="text-2xl">✨</span><span class="text-[10px] tracking-widest uppercase">Influence</span></div>
-  </div>
-</section>
-
-<!-- ====== VIEW 2: QUIZ ====== -->
-<section id="view-quiz" class="view hidden flex-col min-h-dvh relative z-10">
-  <!-- Top bar -->
-  <header class="fixed top-0 w-full z-50 bg-white/50 backdrop-blur-xl border-b border-white/20">
-    <div class="h-1 w-full bg-surface-container-highest">
-      <div id="progress-fill" class="progress-fill h-full" style="width:0%"></div>
-    </div>
-    <div class="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
-      <span class="font-headline-md text-headline-md tracking-tighter text-primary">LBTI</span>
-      <span id="progress-text" class="font-label-caps text-label-caps text-on-surface-variant">1 / 24</span>
-    </div>
-  </header>
-
-  <!-- Question area -->
-  <main class="flex-grow pt-28 pb-40 px-margin-mobile flex flex-col items-center justify-center">
-    <div id="dimension-tag" class="mb-4 font-label-caps text-label-caps tracking-[0.2em] uppercase opacity-70"></div>
-    <h2 id="question-text" class="font-display-lg-mobile text-display-lg-mobile text-on-surface mb-10 text-center leading-relaxed max-w-md"></h2>
-
-    <!-- Options -->
-    <div id="options-container" class="flex flex-col gap-3.5 w-full max-w-md">
-    </div>
-  </main>
-
-  <!-- Bottom nav -->
-  <nav class="fixed bottom-0 w-full px-margin-mobile py-6 bg-gradient-to-t from-background via-background/90 to-transparent">
-    <div class="max-w-md mx-auto flex items-center justify-between gap-gutter">
-      <button id="btn-prev" onclick="prevQuestion()"
-        class="flex items-center justify-center gap-1.5 py-4 px-6 rounded-full border border-outline-variant/30 text-on-surface-variant font-label-caps text-label-caps transition-all active:scale-95 disabled:opacity-30">
-        ← 上一题
-      </button>
-      <button id="btn-next" onclick="nextQuestion()"
-        class="flex-[1.5] flex items-center justify-center gap-2 py-4 rounded-full bg-primary text-on-primary font-label-caps text-label-caps shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-30">
-        下一题 →
-      </button>
-    </div>
-  </nav>
-</section>
-
-<!-- ====== VIEW 3: CALCULATING ====== -->
-<section id="view-calculating" class="view hidden flex-col items-center justify-center min-h-dvh relative z-10 px-margin-mobile">
-  <div class="text-center">
-    <div class="flex items-center justify-center gap-2 mb-8">
-      <div class="pulse-dot"></div>
-      <div class="pulse-dot"></div>
-      <div class="pulse-dot"></div>
-    </div>
-    <p class="font-headline-md text-headline-md text-primary mb-2">正在绘制你的能量分布…</p>
-    <p class="font-body-md text-on-surface-variant opacity-60">分析 24 道回答中</p>
-  </div>
-</section>
-
-<!-- ====== VIEW 4: RESULT ====== -->
-<section id="view-result" class="view hidden flex-col items-center min-h-dvh relative z-10 pb-32">
-  <!-- Top bar -->
-  <header class="sticky top-0 w-full z-50 bg-white/50 backdrop-blur-xl border-b border-white/20">
-    <div class="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
-      <span class="font-headline-md text-headline-md tracking-tighter text-primary">LBTI</span>
-      <button onclick="resetQuiz()" class="font-label-caps text-label-caps text-primary">重新测试</button>
-    </div>
-  </header>
-
-  <div class="w-full max-w-md mx-auto px-margin-mobile pt-8 fade-seq">
-
-    <!-- Type hero -->
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center px-4 py-1.5 glass rounded-full mb-4 border border-white/50">
-        <span class="font-label-caps text-label-caps text-primary tracking-[0.2em]">YOUR ENERGY TYPE</span>
-      </div>
-      <div id="type-emoji-display" class="text-7xl mb-3 type-glow"></div>
-      <h1 id="type-name-display" class="font-display-lg-mobile text-display-lg-mobile text-on-surface mb-1"></h1>
-      <p id="type-code-display" class="font-headline-md text-headline-md text-primary/70"></p>
-      <p id="type-tagline" class="font-body-lg text-body-lg text-on-surface-variant italic mt-2"></p>
-    </div>
-
-    <!-- Stability gauge -->
-    <div class="glass rounded-2xl p-5 mb-6 flex items-center gap-4">
-      <div class="relative w-16 h-16 shrink-0">
-        <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(121,84,101,0.1)" stroke-width="8"/>
-          <circle id="stability-ring" cx="50" cy="50" r="40" fill="none" stroke="#795465" stroke-width="8" stroke-linecap="round"
-            class="gauge-ring"/>
-        </svg>
-        <span id="stability-value" class="absolute inset-0 flex items-center justify-center font-bold text-sm"></span>
-      </div>
+<!-- Header -->
+<header class="sticky top-0 z-30 bg-white/80 dark:bg-[#1a1025]/80 backdrop-blur-lg border-b border-pink-100 dark:border-pink-900/30" style="padding-top:var(--safe-top)">
+  <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2 cursor-pointer" onclick="backToLanding()" title="返回首页">
+      <span class="text-2xl">🎭</span>
       <div>
-        <p class="font-label-caps text-label-caps text-primary">稳定指数</p>
-        <p id="stability-label" class="text-sm text-on-surface-variant"></p>
+        <h1 class="text-sm font-bold truncate i18n" data-cn="SBTI 人格测试" data-en="SBTI Personality"></h1>
+        <p class="text-[10px] text-slate-400 truncate i18n" data-cn="测测你的专属人格" data-en="Discover your type"></p>
       </div>
     </div>
-
-    <!-- Dimension bars -->
-    <div class="glass rounded-2xl p-6 mb-6 space-y-5">
-      <h3 class="font-label-caps text-label-caps text-on-surface-variant tracking-[0.15em] mb-2">维度分析</h3>
-      <div id="dim-bars-container"></div>
-    </div>
-
-    <!-- Personal interpretation -->
-    <div class="share-card rounded-[2rem] p-7 mb-6">
-      <div class="flex items-center gap-2 mb-4">
-        <span class="text-lg">💫</span>
-        <h3 class="font-headline-md text-lg text-primary">灵魂回声</h3>
-      </div>
-      <p id="personal-quote" class="font-body-lg text-on-surface italic leading-relaxed mb-4"></p>
-      <div class="h-px w-full bg-gradient-to-r from-primary/20 to-transparent mb-4"></div>
-      <p id="personal-analysis" class="font-body-md text-on-surface-variant leading-relaxed"></p>
-    </div>
-
-    <!-- All 16 types gallery -->
-    <div class="glass rounded-2xl p-5 mb-6">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="font-label-caps text-label-caps text-primary tracking-[0.1em]">全部 16 种类型</h3>
-        <span class="text-[10px] text-on-surface-variant/50">Gallery</span>
-      </div>
-      <div id="type-gallery" class="grid grid-cols-2 gap-2"></div>
-    </div>
-
-    <!-- Action buttons -->
-    <div class="flex gap-3">
-      <button onclick="shareResult()"
-        class="flex-1 bg-primary text-on-primary font-label-caps text-label-caps py-4 rounded-full flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-all">
-        分享结果 ↗
-      </button>
-      <button onclick="resetQuiz()"
-        class="flex-1 bg-white/50 text-primary font-label-caps text-label-caps py-4 rounded-full border border-primary/20 active:scale-95 transition-all">
-        重新测试
+    <div class="flex items-center gap-1">
+      <button onclick="switchLang()" class="p-2 rounded-lg text-xs font-bold text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/30 active:scale-95 transition" id="lang-btn">EN</button>
+      <button onclick="toggleTheme()" aria-label="切换深色模式" class="p-2 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 active:scale-95 transition">
+        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
       </button>
     </div>
-    <p class="text-center text-[11px] text-on-surface-variant/40 mt-4 mb-8">长按保存卡片 · 分享你的能量光谱</p>
   </div>
-</section>
+</header>
+
+<main class="max-w-2xl mx-auto px-4">
+
+  <!-- ====== LANDING PAGE ====== -->
+  <section id="landing" class="pt-6 pb-8 text-center">
+    <div class="text-6xl mb-4">🎭</div>
+    <h2 class="text-2xl font-extrabold mb-2 i18n" data-cn="SBTI 人格测试" data-en="SBTI Personality Test"></h2>
+    <p class="text-slate-500 dark:text-slate-400 mb-6 i18n"
+       data-cn="🔥 火爆全网的趣味人格测试 · 30 题解锁你的专属人格<br>已有 27 种结局等你来探索"
+       data-en="🔥 Viral personality quiz · 30 questions to unlock your type<br>27 unique outcomes await you"></p>
+    <!-- Resume quiz (shown when quiz in progress) -->
+    <div id="resume-section" class="hidden mb-4">
+      <p class="text-xs text-slate-400 mb-2 i18n" data-cn="📝 你有一个未完成的测试" data-en="📝 You have an unfinished quiz"></p>
+      <button onclick="startQuiz(false)" class="btn-primary px-10 py-4 text-lg inline-flex items-center gap-2 w-full justify-center">
+        <span class="i18n" data-cn="📋 继续答题" data-en="📋 Continue Quiz"></span>
+      </button>
+      <p class="text-xs text-slate-400 mt-2">
+        <span id="resume-progress"></span>
+        <button onclick="startQuiz(true)" class="text-pink-500 underline ml-1 i18n" data-cn="（重新开始）" data-en="(Start over)"></button>
+      </p>
+    </div>
+
+    <div id="start-section">
+      <button onclick="startQuiz(true)" class="btn-primary px-10 py-4 text-lg inline-flex items-center gap-2">
+        <span class="i18n" data-cn="✨ 开始测试" data-en="✨ Start Quiz"></span>
+      </button>
+    </div>
+    <p class="text-xs text-slate-400 mt-3 i18n" data-cn="约 3 分钟 · 仅供娱乐" data-en="~3 min · For fun only"></p>
+    <p class="text-xs text-pink-400/70 mt-2" id="test-counter"></p>
+
+    <div class="mt-8 pt-6 border-t border-pink-100 dark:border-pink-900/30">
+      <p class="text-sm text-slate-500 mb-3 i18n" data-cn="👀 不想做测试？直接看全部 27 种人格 ↓" data-en="👀 Skip the quiz? Browse all 27 types ↓"></p>
+      <button onclick="showWiki()" class="text-pink-500 font-semibold text-sm hover:underline i18n" data-cn="📖 查看完整图鉴 →" data-en="📖 View Full Gallery →"></button>
+    </div>
+
+    <!-- Test History -->
+    <div id="history-section" class="hidden mt-8 pt-6 border-t border-pink-100 dark:border-pink-900/30">
+      <p class="text-sm text-slate-500 mb-3 i18n" data-cn="📋 你的测试记录" data-en="📋 Your Test Records"></p>
+      <div id="history-list"></div>
+      <button onclick="clearHistory()" class="mt-3 text-xs text-slate-400 hover:text-pink-500 underline i18n" data-cn="清空记录" data-en="Clear history"></button>
+    </div>
+  </section>
+
+  <!-- ====== QUIZ SECTION ====== -->
+  <section id="quiz" class="hidden pt-4 pb-8">
+    <div class="flex items-center justify-between mb-2 text-xs text-slate-400">
+      <span id="quiz-progress-text"></span>
+      <span id="quiz-percent"></span>
+    </div>
+    <div class="progress-bar mb-6"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+    <div class="card p-6 mb-4">
+      <p class="text-lg font-semibold leading-relaxed" id="question-text"></p>
+    </div>
+
+    <div class="space-y-3 mb-6" id="options-container"></div>
+
+    <div class="flex gap-3">
+      <button id="btn-prev" onclick="prevQuestion()" class="flex-1 py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-slate-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition disabled:opacity-30 disabled:cursor-not-allowed" disabled></button>
+      <button id="btn-next" onclick="nextQuestion()" class="flex-[2] py-3 rounded-2xl font-semibold text-white bg-slate-300 dark:bg-slate-700 transition disabled:opacity-30 disabled:cursor-not-allowed" disabled></button>
+    </div>
+  </section>
+
+  <!-- ====== RESULT SECTION ====== -->
+  <section id="result" class="hidden pt-4 pb-8">
+    <div class="text-center mb-6" id="result-content"></div>
+  </section>
+
+  <!-- ====== WIKI SECTION ====== -->
+  <section id="wiki" class="hidden pt-4 pb-8">
+    <div class="text-center mb-6">
+      <h2 class="text-xl font-extrabold mb-1 i18n" data-cn="📖 27 种结局图鉴" data-en="📖 27 Outcome Gallery"></h2>
+      <p class="text-sm text-slate-400 i18n" data-cn="点击卡片查看详情" data-en="Tap a card for details"></p>
+      <button onclick="backToLanding()" class="mt-3 text-pink-500 text-sm font-semibold hover:underline i18n" data-cn="← 返回首页去测试" data-en="← Back to quiz"></button>
+    </div>
+
+    <div class="mb-4">
+      <input type="text" id="wiki-search" oninput="filterWiki()"
+        class="w-full px-4 py-3 rounded-2xl border-2 border-pink-100 dark:border-pink-900/30 bg-white dark:bg-[#241835] text-sm focus:outline-none focus:border-pink-300 i18n"
+        data-cn-placeholder="🔍 搜索人格名或代号..."
+        data-en-placeholder="🔍 Search by name or code...">
+    </div>
+
+    <div class="grid-gallery" id="wiki-grid"></div>
+  </section>
+
+</main>
+
+<!-- Modal -->
+<div id="modal" class="modal-overlay hidden" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet" id="modal-content"></div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Hidden canvas for share card -->
+<canvas id="share-canvas" width="1200" height="1600" style="display:none"></canvas>
 
 <script>
 // ==================== DATA ====================
-
-// Questions: { text, dimension, flip } — flip=true means raw score is reversed
-const QUESTIONS = [
-  // L dimension: Love / 情感启动 (S ↔ F)
-  { id:1,  text:"第一次认识喜欢的人时，我通常不会立刻表现热情。", dim:"Love · 情感启动", flip:false },
-  { id:2,  text:"如果聊天舒服，我很容易快速产生亲近感。", dim:"Love · 情感启动", flip:true },
-  { id:3,  text:"我需要观察一段时间才会真正信任别人。", dim:"Love · 情感启动", flip:false },
-  { id:4,  text:"我常凭第一感觉决定要不要靠近一个人。", dim:"Love · 情感启动", flip:true },
-  { id:5,  text:"关系一旦确定，我通常投入很深。", dim:"Love · 情感启动", flip:false },
-  { id:6,  text:"我容易因为情绪共鸣而迅速拉近距离。", dim:"Love · 情感启动", flip:true },
-  // B dimension: Boundary / 边界感 (O ↔ P)
-  { id:7,  text:"别人问我近况时，我通常愿意分享真实状态。", dim:"Boundary · 边界感", flip:true },
-  { id:8,  text:"即使关系不错，我也会保留很多私人空间。", dim:"Boundary · 边界感", flip:false },
-  { id:9,  text:"难过时，我更愿意找人说。", dim:"Boundary · 边界感", flip:true },
-  { id:10, text:"我习惯先自己处理情绪。", dim:"Boundary · 边界感", flip:false },
-  { id:11, text:"别人通常知道我最近发生了什么。", dim:"Boundary · 边界感", flip:true },
-  { id:12, text:"我会主动表达自己的需求。", dim:"Boundary · 边界感", flip:true },
-  // T dimension: Tempo / 生活节奏 (G ↔ D)
-  { id:13, text:"计划被打乱会明显影响我的状态。", dim:"Tempo · 生活节奏", flip:false },
-  { id:14, text:"突然改变安排让我有点兴奋。", dim:"Tempo · 生活节奏", flip:true },
-  { id:15, text:"我更喜欢稳定重复，而不是不断变化。", dim:"Tempo · 生活节奏", flip:false },
-  { id:16, text:"我常因为兴趣突然开始新事情。", dim:"Tempo · 生活节奏", flip:true },
-  { id:17, text:"规律生活让我舒服。", dim:"Tempo · 生活节奏", flip:false },
-  { id:18, text:"灵感比计划更重要。", dim:"Tempo · 生活节奏", flip:true },
-  // I dimension: Influence / 存在感 (L ↔ M)
-  { id:19, text:"聚会里，我不介意成为焦点。", dim:"Influence · 存在感", flip:true },
-  { id:20, text:"我更喜欢默默影响别人。", dim:"Influence · 存在感", flip:false },
-  { id:21, text:"别人常说我存在感很强。", dim:"Influence · 存在感", flip:true },
-  { id:22, text:"我不主动，但容易让人安心。", dim:"Influence · 存在感", flip:false },
-  { id:23, text:"我会自然带动气氛。", dim:"Influence · 存在感", flip:true },
-  { id:24, text:"我希望关系里的空间大于热闹。", dim:"Influence · 存在感", flip:false },
-];
-
-const OPTIONS = ["非常不像我","有点不像","一般","比较像","非常像"];
-
-// 16 types
-const TYPES = {
-  SPGL: { name:"白茶女孩", emoji:"☁️", tagline:"像冬天晒到的一小块太阳。", color:"#c98b3a" },
-  SPGM: { name:"月光玫瑰", emoji:"🌙", tagline:"看起来安静，但总有人想靠近。", color:"#c98b3a" },
-  SPDL: { name:"雪夜女孩", emoji:"❄️", tagline:"自由又克制。", color:"#c98b3a" },
-  SPDM: { name:"极光女孩", emoji:"🌌", tagline:"低调但会突然发光。", color:"#c98b3a" },
-  SOGL: { name:"山茶女孩", emoji:"🌷", tagline:"稳定关系创造者。", color:"#1c648e" },
-  SOGM: { name:"奶油女孩", emoji:"🧈", tagline:"温柔且有存在感。", color:"#1c648e" },
-  SODL: { name:"海盐女孩", emoji:"🌊", tagline:"舒服且有距离。", color:"#1c648e" },
-  SODM: { name:"晚风女孩", emoji:"🍃", tagline:"慢熟，但很迷人。", color:"#1c648e" },
-  FPGL: { name:"白桃女孩", emoji:"🍑", tagline:"亲近但有边界。", color:"#006e20" },
-  FPGM: { name:"香槟女孩", emoji:"🍾", tagline:"热情但不失控。", color:"#006e20" },
-  FPDL: { name:"流星女孩", emoji:"☄️", tagline:"心动来得快。", color:"#006e20" },
-  FPDM: { name:"焰火女孩", emoji:"🎆", tagline:"情绪感染力极强。", color:"#006e20" },
-  FOGL: { name:"晨露女孩", emoji:"🌼", tagline:"治愈型连接。", color:"#795465" },
-  FOGM: { name:"日落女孩", emoji:"🌅", tagline:"别人眼里的氛围中心。", color:"#795465" },
-  FODL: { name:"银河女孩", emoji:"✨", tagline:"自由浪漫。", color:"#795465" },
-  FODM: { name:"海妖女孩", emoji:"🪩", tagline:"社交吸引力天花板。", color:"#795465" },
-};
-
-// Personal quotes per type
-const PERSONAL_QUOTES = {
-  SPGL: "你不是慢热，你只是把温度留给了值得的人。",
-  SPGM: "安静是你的力量，不是你的缺陷。靠近你的人都会发现宝藏。",
-  SPDL: "你不是不好接近，你只是会认真选择靠近谁。",
-  SPDM: "低调是一种高级的自信，爆发时谁都看得见。",
-  SOGL: "稳定是你给这个世界最好的礼物。",
-  SOGM: "温柔从来不是软弱，是你选择的力量。",
-  SODL: "保持距离不是冷漠，是你保护自己能量的方式。",
-  SODM: "慢熟的人，往往最值得等。",
-  FPGL: "你热情又清醒，亲近但不越界。这是最高级的情商。",
-  FPGM: "你的情绪感染力是天赋，而你懂得如何收放自如。",
-  FPDL: "心动不必克制，那是生命里最鲜活的信号。",
-  FPDM: "你是聚会里的焰火，但你知道焰火也需要夜空。",
-  FOGL: "治愈别人之前，你已经在治愈自己。",
-  FOGM: "你不需要刻意吸引，你的存在本身就是氛围。",
-  FODL: "自由是你灵魂的底色，浪漫是你选择的语言。",
-  FODM: "你是人群里的引力中心，但你比任何人都懂独处的珍贵。",
-};
-
-// Dimension config
-const DIM_CONFIG = {
-  L: { label:"Love · 心动速度", pole1:"Slow 慢热", pole2:"Fast 共鸣", color:"#c98b3a", bg:"rgba(201,139,58,0.08)" },
-  B: { label:"Boundary · 社交温度", pole1:"Protected 保护", pole2:"Open 开放", color:"#1c648e", bg:"rgba(28,100,142,0.08)" },
-  T: { label:"Tempo · 安全感需求", pole1:"Grounded 平稳", pole2:"Dynamic 变化", color:"#006e20", bg:"rgba(0,110,32,0.08)" },
-  I: { label:"Influence · 气场浓度", pole1:"Light 柔光", pole2:"Magnetic 磁场", color:"#795465", bg:"rgba(121,84,101,0.08)" },
-};
-
-// Dimension label mapping for result display
-const DIM_LABELS = {
-  L: { first:"Slow 慢热", second:"Fast 共鸣" },
-  B: { first:"Protected 保护", second:"Open 开放" },
-  T: { first:"Grounded 平稳", second:"Dynamic 变化" },
-  I: { first:"Light 柔光", second:"Magnetic 磁场" },
-};
+var QUESTIONS = [];
+var SPECIAL_QUESTIONS = [];
+var DIM_MAP = {};
+var OUTCOMES_DATA = null;
+var PATTERNS = null;
+var DIMENSIONS = null;
+var RARITY = null;
+var RARITY_RANKED = null; // sorted array for rank lookup
 
 // ==================== STATE ====================
-let currentQuestion = 0;
-let answers = new Array(24).fill(null); // 0-indexed, stores 1-5
-let selectedValue = null;
+var currentView = 'landing';
+var currentQ = 0;
+var answers = {};
+var result = null;
+var lang = 'cn';
+var testHistory = [];
 
-// ==================== VIEW SWITCHING ====================
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => { v.classList.add('hidden'); v.classList.remove('active'); });
-  const target = document.getElementById('view-' + id);
-  target.classList.remove('hidden');
-  // ponytail: force reflow so transition plays
-  void target.offsetWidth;
-  target.classList.add('active');
-  window.scrollTo(0, 0);
+// ==================== I18N ====================
+function t(cn, en) { return lang === 'cn' ? cn : en; }
+
+function switchLang() {
+  lang = lang === 'cn' ? 'en' : 'cn';
+  document.documentElement.lang = lang === 'cn' ? 'zh-CN' : 'en';
+  localStorage.setItem('sbti-lang', lang);
+  document.getElementById('lang-btn').textContent = lang === 'cn' ? 'EN' : '中文';
+  refreshI18n();
 }
 
-// ==================== QUIZ LOGIC ====================
-function startQuiz() {
-  currentQuestion = 0;
-  answers = new Array(24).fill(null);
-  selectedValue = null;
+function refreshI18n() {
+  document.querySelectorAll('.i18n').forEach(function(el) {
+    var cn = el.getAttribute('data-cn');
+    var en = el.getAttribute('data-en');
+    if (cn && en) el.innerHTML = lang === 'cn' ? cn : en;
+  });
+  // Update input placeholders
+  document.querySelectorAll('.i18n[data-cn-placeholder]').forEach(function(el) {
+    el.placeholder = lang === 'cn' ? el.getAttribute('data-cn-placeholder') : el.getAttribute('data-en-placeholder');
+  });
+  // Update nav button text
+  if (currentView === 'quiz') updateNavButtons();
+  updateTestCounter();
+  // Refresh current view
+  if (currentView === 'wiki') buildWikiGrid();
+  if (currentView === 'quiz') renderQuestion();
+  if (currentView === 'result' && result) showResult();
+  if (currentView === 'landing') { renderHistory(); checkResumeQuiz(); }
+}
+
+// ==================== IMAGE PATH FIX ====================
+// ponytail: map renamed images, old→new. Remove when outcomes.json is regenerated.
+var IMAGE_MAP = {
+  'images/ATM-er.png': 'images/ATMM.png',
+  'images/ATM-er': 'images/ATMM',
+  'images/Dior-s.jpg': 'images/DIOR.png',
+  'images/Dior-s': 'images/DIOR',
+  'images/DRUNK.png': 'images/DRNK.png',
+  'images/DRUNK': 'images/DRNK',
+  'images/FUCK.png': 'images/FCUK.png',
+  'images/FUCK': 'images/FCUK',
+  'images/GOGO.png': 'images/GOOO.png',
+  'images/GOGO': 'images/GOOO',
+  'images/IMFW.png': 'images/IMWL.png',
+  'images/IMFW': 'images/IMWL',
+  'images/JOKE-R.jpg': 'images/JOKER.png',
+  'images/JOKE-R': 'images/JOKER',
+  'images/LOVE-R.png': 'images/LOVER.png',
+  'images/LOVE-R': 'images/LOVER',
+  'images/OJBK.png': 'images/OBJK.png',
+  'images/OJBK': 'images/OBJK',
+  'images/POOR.png': 'images/POKR.png',
+  'images/POOR': 'images/POKR',
+  'images/THAN-K.png': 'images/THNK.png',
+  'images/THAN-K': 'images/THNK',
+  'images/THIN-K.png': 'images/THNK.png',
+  'images/THIN-K': 'images/THNK',
+  'images/WOC.png': 'images/WOCL.png',
+  'images/WOC': 'images/WOCL'
+};
+
+function fixImagePath(path) {
+  return IMAGE_MAP[path] || path;
+}
+
+// ==================== INIT ====================
+async function init() {
+  try {
+    var qRes = await fetch('data/questions.json');
+    var qData = await qRes.json();
+    QUESTIONS = qData.questions;
+    SPECIAL_QUESTIONS = qData.specialQuestions;
+    DIM_MAP = qData.dimensionMap;
+
+    var oRes = await fetch('web/data/outcomes.json');
+    OUTCOMES_DATA = await oRes.json();
+
+    var pRes = await fetch('data/patterns.json');
+    PATTERNS = await pRes.json();
+
+    var dRes = await fetch('data/dimensions.json');
+    DIMENSIONS = await dRes.json();
+
+    var rRes = await fetch('data/rarity.json');
+    RARITY = await rRes.json();
+    // Build ranked array for easy lookup
+    var entries = Object.entries(RARITY.rarity).map(function(e) { return {code:e[0], pct:e[1]}; });
+    entries.sort(function(a,b) { return a.pct - b.pct; });
+    RARITY_RANKED = entries;
+  } catch(e) {
+    console.error('Data load failed:', e);
+  }
+
+  // ponytail: save original quiz HTML — showDrinkQuestions() overwrites it
+  window._quizHTML = document.getElementById('quiz').innerHTML;
+
+  if (localStorage.getItem('sbti-lang') === 'en') { lang = 'en'; switchLang(); }
+  loadHistory();
+  refreshI18n();
+  if (isWechat()) document.getElementById('wechat-banner').classList.remove('hidden');
+  handleHash();
+  window.addEventListener('hashchange', handleHash);
+}
+
+// ==================== NAVIGATION ====================
+function handleHash() {
+  var h = location.hash;
+  if (h.startsWith('#quiz')) startQuiz();
+  else if (h.startsWith('#result')) restoreResult();
+  else if (h.startsWith('#wiki')) showWiki();
+  else backToLanding();
+}
+
+function showView(id) {
+  ['landing','quiz','result','wiki'].forEach(function(v) {
+    document.getElementById(v).classList.toggle('hidden', v !== id);
+  });
+  currentView = id;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function backToLanding() { showView('landing'); renderHistory(); checkResumeQuiz(); history.replaceState(null,'','#'); }
+
+function checkResumeQuiz() {
+  var resumeSection = document.getElementById('resume-section');
+  var startSection = document.getElementById('start-section');
+  if (!resumeSection || !startSection) return;
+  try {
+    var saved = JSON.parse(localStorage.getItem('sbti-quiz') || 'null');
+    if (saved && saved.currentQ > 0 && saved.answers && Object.keys(saved.answers).length > 0) {
+      resumeSection.classList.remove('hidden');
+      startSection.classList.add('hidden');
+      var done = Object.keys(saved.answers).length;
+      var total = 30;
+      var el = document.getElementById('resume-progress');
+      if (el) el.textContent = t('已完成 ' + done + ' / ' + total + ' 题', 'Done: ' + done + ' / ' + total);
+      return;
+    }
+  } catch(e) {}
+  resumeSection.classList.add('hidden');
+  startSection.classList.remove('hidden');
+}
+
+function showWiki() { showView('wiki'); buildWikiGrid(); history.replaceState(null,'','#wiki'); }
+
+// ==================== QUIZ ====================
+function startQuiz(fresh) {
+  if (!fresh) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('sbti-quiz') || 'null');
+      if (saved && saved.currentQ > 0 && saved.answers) {
+        answers = saved.answers;
+        currentQ = saved.currentQ;
+        showView('quiz');
+        history.replaceState(null,'','#quiz');
+        renderQuestion();
+        return;
+      }
+    } catch(e) {}
+  }
+  answers = {};
+  result = null;
+  currentQ = 0;
+  localStorage.removeItem('sbti-quiz');
+  localStorage.removeItem('sbti-result');
+  // Restore original quiz DOM (showDrinkQuestions may have overwritten it)
+  if (window._quizHTML) document.getElementById('quiz').innerHTML = window._quizHTML;
   showView('quiz');
+  history.replaceState(null,'','#quiz');
   renderQuestion();
 }
 
 function renderQuestion() {
-  const q = QUESTIONS[currentQuestion];
-  selectedValue = answers[currentQuestion];
+  var qs = QUESTIONS;
+  var total = qs.length;
+  var q = qs[currentQ];
+  if (!q) { finishQuiz(); return; }
 
-  document.getElementById('dimension-tag').textContent = q.dim;
-  document.getElementById('question-text').textContent = (currentQuestion + 1) + '. ' + q.text;
-  document.getElementById('progress-text').textContent = (currentQuestion + 1) + ' / 24';
+  document.getElementById('question-text').textContent = q.text;
 
-  // Progress bar
-  const pct = ((currentQuestion) / 24 * 100).toFixed(1);
+  var sel = answers[q.id];
+  var html = '';
+  q.options.forEach(function(o) {
+    var cls = sel === o.value ? ' selected' : '';
+    html += '<button class="btn-option w-full' + cls + '" onclick="selectOption(\'' + q.id + '\',' + o.value + ',this)">';
+    html += '<span class="emoji">' + (o.emoji || '') + '</span>';
+    html += '<span class="flex-1">' + o.text + '</span>';
+    html += '</button>';
+  });
+  document.getElementById('options-container').innerHTML = html;
+
+  var pct = Math.round((currentQ + 1) / total * 100);
+  document.getElementById('quiz-progress-text').textContent = t('第 ' + (currentQ + 1) + ' / ' + total + ' 题', 'Q ' + (currentQ + 1) + ' / ' + total);
+  document.getElementById('quiz-percent').textContent = pct + '%';
   document.getElementById('progress-fill').style.width = pct + '%';
 
-  // Render options
-  const container = document.getElementById('options-container');
-  container.innerHTML = '';
-  OPTIONS.forEach((opt, i) => {
-    const val = i + 1; // 1-5
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn glass w-full flex items-center justify-between px-6 py-5 rounded-xl text-left';
-    if (selectedValue === val) btn.classList.add('selected');
-
-    btn.innerHTML = `
-      <span class="font-body-lg ${selectedValue === val ? 'text-white' : 'text-on-surface-variant'}">${opt}</span>
-      <div class="w-6 h-6 rounded-full border-2 ${selectedValue === val ? 'border-white' : 'border-outline-variant'} flex items-center justify-center shrink-0">
-        <div class="w-3 h-3 rounded-full ${selectedValue === val ? 'bg-white' : 'bg-transparent'} transition-all"></div>
-      </div>`;
-    btn.onclick = () => selectOption(val);
-    container.appendChild(btn);
-  });
-
-  // Update nav buttons
-  document.getElementById('btn-prev').disabled = currentQuestion === 0;
-  const btnNext = document.getElementById('btn-next');
-  btnNext.textContent = currentQuestion === 23 ? '查看结果 →' : '下一题 →';
-  btnNext.disabled = selectedValue === null;
+  updateNavButtons();
 }
 
-function selectOption(val) {
-  selectedValue = val;
-  answers[currentQuestion] = val;
-  document.getElementById('btn-next').disabled = false;
+function selectOption(qid, value, el) {
+  answers[qid] = value;
+  document.querySelectorAll('#options-container .btn-option').forEach(function(b) { b.classList.remove('selected'); });
+  el.classList.add('selected');
+  updateNavButtons();
+  saveQuizState();
+  // Auto-advance after short delay for tap feedback
+  setTimeout(function() { nextQuestion(); }, 350);
+}
 
-  // Update button styles
-  const buttons = document.querySelectorAll('.opt-btn');
-  buttons.forEach(b => b.classList.remove('selected'));
-  buttons.forEach((b, i) => {
-    if (i + 1 === val) b.classList.add('selected');
-    const span = b.querySelector('span');
-    const circle = b.querySelector('.w-6');
-    const dot = b.querySelector('.w-3');
-    if (i + 1 === val) {
-      span.className = 'font-body-lg text-white';
-      circle.className = 'w-6 h-6 rounded-full border-2 border-white flex items-center justify-center shrink-0';
-      dot.className = 'w-3 h-3 rounded-full bg-white transition-all';
-    } else {
-      span.className = 'font-body-lg text-on-surface-variant';
-      circle.className = 'w-6 h-6 rounded-full border-2 border-outline-variant flex items-center justify-center shrink-0';
-      dot.className = 'w-3 h-3 rounded-full bg-transparent transition-all';
-    }
-  });
+function updateNavButtons() {
+  var q = QUESTIONS[currentQ];
+  var hasAns = q && answers[q.id] !== undefined;
+  var btnNext = document.getElementById('btn-next');
+  var btnPrev = document.getElementById('btn-prev');
+  var isFirst = currentQ === 0;
+  var isLast = currentQ >= QUESTIONS.length - 1;
 
-  // Auto-advance after short delay
-  setTimeout(() => {
-    if (currentQuestion < 23) {
-      nextQuestion();
-    } else {
-      calculateResult();
-    }
-  }, 400);
+  btnPrev.disabled = isFirst;
+  btnPrev.textContent = t('← 上一题', '← Back');
+  btnNext.disabled = !hasAns;
+
+  if (hasAns) {
+    btnNext.className = 'btn-primary flex-[2] py-3 rounded-2xl font-semibold';
+    btnNext.textContent = isLast ? t('✨ 查看结果', '✨ See Result') : t('下一题 →', 'Next →');
+  } else {
+    btnNext.className = 'flex-[2] py-3 rounded-2xl font-semibold text-white bg-slate-300 dark:bg-slate-700 transition disabled:opacity-30 disabled:cursor-not-allowed';
+  }
 }
 
 function nextQuestion() {
-  if (selectedValue === null && currentQuestion < 23) return;
-  if (currentQuestion < 23) {
-    currentQuestion++;
-    selectedValue = answers[currentQuestion];
-    renderQuestion();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    calculateResult();
+  var q = QUESTIONS[currentQ];
+  if (answers[q.id] === undefined) return;
+  if (currentQ >= QUESTIONS.length - 1) {
+    if (answers['drink_gate_q1'] === undefined) { showDrinkQuestions(); return; }
+    finishQuiz();
+    return;
   }
+  currentQ++;
+  renderQuestion();
+  saveQuizState();
+}
+
+function saveQuizState() {
+  try {
+    localStorage.setItem('sbti-quiz', JSON.stringify({ currentQ: currentQ, answers: answers, view: 'quiz' }));
+  } catch(e) {}
 }
 
 function prevQuestion() {
-  if (currentQuestion > 0) {
-    currentQuestion--;
-    selectedValue = answers[currentQuestion];
-    renderQuestion();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+function showDrinkQuestions() {
+  var html = '<div class="text-center mb-4"><span class="text-sm text-pink-500 font-semibold">🍶 ' + t('最后两题~', 'Last two~') + '</span></div>';
+  SPECIAL_QUESTIONS.forEach(function(sq) {
+    html += '<div class="card p-6 mb-4"><p class="text-lg font-semibold leading-relaxed">' + sq.text + '</p></div>';
+    html += '<div class="space-y-3 mb-6">';
+    var sel = answers[sq.id];
+    sq.options.forEach(function(o) {
+      html += '<button class="btn-option w-full" onclick="selectDrinkOption(\'' + sq.id + '\',' + o.value + ',this)">';
+      html += '<span class="emoji">' + (o.emoji || '') + '</span>';
+      html += '<span class="flex-1">' + o.text + '</span>';
+      html += '</button>';
+    });
+    html += '</div>';
+  });
+  var isLastQ = currentQ >= QUESTIONS.length - 1;
+  html += '<button onclick="resumeAfterDrink()" id="btn-drink-done" class="btn-primary w-full py-3 rounded-2xl font-semibold text-lg"';
+  if (answers['drink_gate_q2'] === undefined) html += ' disabled style="opacity:.4"';
+  html += '>' + (isLastQ ? t('✨ 查看结果', '✨ See Result') : t('继续答题 →', 'Continue →')) + '</button>';
+
+  var quizEl = document.getElementById('quiz');
+  quizEl.innerHTML = html;
+  quizEl.classList.remove('hidden');
+  showView('quiz');
+}
+
+function resumeAfterDrink() {
+  if (currentQ >= QUESTIONS.length - 1) { finishQuiz(); return; }
+  currentQ = 12;
+  renderQuestion();
+}
+
+function selectDrinkOption(qid, value, el) {
+  answers[qid] = value;
+  var container = el.parentElement;
+  container.querySelectorAll('.btn-option').forEach(function(b) { b.classList.remove('selected'); });
+  el.classList.add('selected');
+  var btn = document.getElementById('btn-drink-done');
+  if (answers['drink_gate_q2'] !== undefined) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    // Auto-advance when both drink gate questions answered
+    setTimeout(function() { resumeAfterDrink(); }, 350);
   }
 }
 
-// ==================== SCORING ENGINE ====================
-function flip(score) { return 6 - score; }
+// ==================== SCORING ====================
+function finishQuiz() {
+  localStorage.removeItem('sbti-quiz');
+  incrementTestCounter();
+  var dimOrder = DIMENSIONS.order;
+  var dimScores = {};
+  var userVector = [];
 
-function calculateResult() {
-  // Check if all questions answered
-  if (answers.some(a => a === null)) {
-    // Find first unanswered and go there
-    const idx = answers.findIndex(a => a === null);
-    if (idx >= 0) {
-      currentQuestion = idx;
-      selectedValue = null;
-      renderQuestion();
-      alert('请回答所有题目后再查看结果～');
-      return;
+  dimOrder.forEach(function(dim) {
+    var qs = DIM_MAP[dim];
+    var sum = 0;
+    if (qs) qs.forEach(function(qid) { sum += (answers[qid] || 2); });
+    if (sum <= 3) { dimScores[dim] = 'L'; userVector.push('L'); }
+    else if (sum === 4) { dimScores[dim] = 'M'; userVector.push('M'); }
+    else { dimScores[dim] = 'H'; userVector.push('H'); }
+  });
+
+  // DRUNK trigger
+  if (answers['drink_gate_q2'] === 2) {
+    result = cloneOutcome(findOutcome('DRUNK'));
+    result.similarity = 100;
+    result.isDrunk = true;
+    result.dimScores = dimScores;
+    result.userVector = userVector;
+    showResult();
+    return;
+  }
+
+  // Match 25 normal types — score-difference distance (L=1,M=2,H=3)
+  var toScore = function(v) { return v === 'L' ? 1 : v === 'M' ? 2 : 3; };
+  var userScores = userVector.map(toScore);
+  var best = null, bestDist = Infinity, exactHits = 0;
+  PATTERNS.normal_types.forEach(function(t) {
+    var pattern = t.pattern.replace(/-/g, '').split('');
+    var dist = 0, hits = 0;
+    for (var i = 0; i < 15; i++) {
+      var ps = toScore(pattern[i]);
+      dist += Math.abs(userScores[i] - ps);
+      if (userVector[i] === pattern[i]) hits++;
+    }
+    if (dist < bestDist) { bestDist = dist; best = t; exactHits = hits; }
+  });
+
+  var similarity = Math.max(0, Math.round((1 - bestDist / 30) * 100));
+
+  if (similarity < 60) {
+    result = cloneOutcome(findOutcome('HHHH'));
+    result.similarity = similarity;
+    result.isFallback = true;
+  } else {
+    result = cloneOutcome(findOutcome(best.code));
+    result.similarity = similarity;
+  }
+  result.dimScores = dimScores;
+  result.userVector = userVector;
+  result.bestDist = bestDist;
+  showResult();
+}
+
+function findOutcome(code) {
+  var outcomes = OUTCOMES_DATA.outcomes;
+  for (var i = 0; i < outcomes.length; i++) {
+    if (outcomes[i].code === code) return outcomes[i];
+  }
+  return outcomes[0];
+}
+
+function cloneOutcome(o) { return JSON.parse(JSON.stringify(o)); }
+
+function getRarity(code) {
+  if (!RARITY) return { pct: '?', rank: '?', label: '?' };
+  var pct = RARITY.rarity[code] || 0;
+  // Find rank from sorted array
+  var rank = 0;
+  if (RARITY_RANKED) {
+    for (var i = 0; i < RARITY_RANKED.length; i++) {
+      if (RARITY_RANKED[i].code === code) { rank = i + 1; break; }
     }
   }
-
-  showView('calculating');
-
-  // Compute raw scores (ponytail: direct formula from spec)
-  const L_raw = answers[0] + flip(answers[1]) + answers[2] + flip(answers[3]) + answers[4] + flip(answers[5]);
-  const B_raw = flip(answers[6]) + answers[7] + flip(answers[8]) + answers[9] + flip(answers[10]) + flip(answers[11]);
-  const T_raw = answers[12] + flip(answers[13]) + answers[14] + flip(answers[15]) + answers[16] + flip(answers[17]);
-  const I_raw = flip(answers[18]) + answers[19] + flip(answers[20]) + answers[21] + flip(answers[22]) + answers[23];
-
-  function getTendency(raw) {
-    if (raw > 15) return { pct: Math.round(raw / 30 * 100), isFirst: true };
-    else return { pct: Math.round((30 - raw) / 30 * 100), isFirst: false };
-  }
-
-  const L = getTendency(L_raw);
-  const B = getTendency(B_raw);
-  const T = getTendency(T_raw);
-  const I_tend = getTendency(I_raw);
-
-  // Build type code
-  const typeCode =
-    (L.isFirst ? 'S' : 'F') +
-    (B.isFirst ? 'P' : 'O') +
-    (T.isFirst ? 'G' : 'D') +
-    (I_tend.isFirst ? 'L' : 'M');
-
-  // Stability index
-  const deviations = answers.map(s => Math.abs(s - 3));
-  const meanDev = deviations.reduce((a, b) => a + b, 0) / 24;
-  const stability = Math.round((meanDev / 2) * 100);
-
-  // Store result
-  const result = { typeCode, L, B, T, I: I_tend, stability, raw: { L_raw, B_raw, T_raw, I_raw } };
-
-  // Delay for animation
-  setTimeout(() => renderResult(result), 1800);
+  var label = pct < 1 ? t('极稀有', 'Ultra Rare') : pct < 3 ? t('稀有', 'Rare') : pct < 5 ? t('中等', 'Uncommon') : t('较常见', 'Common');
+  var oneIn = pct > 0 ? Math.round(100 / pct) : '?';
+  return { pct: pct, rank: rank, label: label, oneIn: oneIn };
 }
 
-// ==================== RESULT RENDERING ====================
-function renderResult(r) {
+// ==================== RESULT DISPLAY ====================
+function showResult() {
+  if (!result) return;
   showView('result');
-  const type = TYPES[r.typeCode];
-  const quote = PERSONAL_QUOTES[r.typeCode];
+  var r = result;
+  var rarity = getRarity(r.code);
+  var html = '';
 
-  // Type info
-  document.getElementById('type-emoji-display').textContent = type.emoji;
-  document.getElementById('type-name-display').textContent = type.name;
-  document.getElementById('type-code-display').textContent = r.typeCode + ' · ' + type.name;
-  document.getElementById('type-tagline').textContent = type.tagline;
-  document.getElementById('personal-quote').textContent = '“' + quote + '”';
-
-  // Stability gauge
-  const ring = document.getElementById('stability-ring');
-  const circumference = 2 * Math.PI * 40; // r=40
-  const offset = circumference - (r.stability / 100) * circumference;
-  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 200);
-  document.getElementById('stability-value').textContent = r.stability;
-
-  let stabilityLabel;
-  if (r.stability < 55) stabilityLabel = '最近状态变化较大，结果仅供参考';
-  else if (r.stability <= 75) stabilityLabel = '结果可参考，基本反映当前状态';
-  else stabilityLabel = '状态较稳定，结果有较高一致性';
-  document.getElementById('stability-label').textContent = stabilityLabel;
-
-  // Dimension bars
-  const dims = [
-    { key:'L', data:r.L, config:DIM_CONFIG.L, labels:DIM_LABELS.L },
-    { key:'B', data:r.B, config:DIM_CONFIG.B, labels:DIM_LABELS.B },
-    { key:'T', data:r.T, config:DIM_CONFIG.T, labels:DIM_LABELS.T },
-    { key:'I', data:r.I, config:DIM_CONFIG.I, labels:DIM_LABELS.I },
-  ];
-
-  const barsContainer = document.getElementById('dim-bars-container');
-  barsContainer.innerHTML = '';
-  dims.forEach(d => {
-    const tendency = d.data.isFirst ? d.labels.first : d.labels.second;
-    const div = document.createElement('div');
-    div.className = 'space-y-2';
-    div.innerHTML = `
-      <div class="flex justify-between items-end">
-        <div>
-          <span class="font-label-caps text-label-caps" style="color:${d.config.color}">${d.config.label}</span>
-          <span class="text-[10px] text-on-surface-variant/60 ml-2">${tendency}</span>
-        </div>
-        <span class="font-bold text-lg" style="color:${d.config.color}">${d.data.pct}%</span>
-      </div>
-      <div class="h-2 w-full rounded-full overflow-hidden" style="background:${d.config.bg}">
-        <div class="dim-bar-fill h-full rounded-full" style="width:0%;background:${d.config.color}"
-          data-width="${d.data.pct}%"></div>
-      </div>`;
-    barsContainer.appendChild(div);
-  });
-
-  // Animate bars after render
-  setTimeout(() => {
-    document.querySelectorAll('.dim-bar-fill').forEach(bar => {
-      bar.style.width = bar.dataset.width;
-    });
-  }, 300);
-
-  // Personal analysis
-  document.getElementById('personal-analysis').textContent = generateAnalysis(r);
-
-  // Type gallery
-  renderGallery(r.typeCode);
-
-  // Scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function generateAnalysis(r) {
-  const type = TYPES[r.typeCode];
-  const dims = [
-    { key:'L', data:r.L, name:'心动速度', pole1:'慢热', pole2:'共鸣' },
-    { key:'B', data:r.B, name:'社交边界', pole1:'保护型', pole2:'开放型' },
-    { key:'T', data:r.T, name:'生活节奏', pole1:'平稳', pole2:'变化' },
-    { key:'I', data:r.I, name:'存在方式', pole1:'柔光', pole2:'磁场' },
-  ];
-
-  const parts = dims.map(d => {
-    const pole = d.data.isFirst ? d.pole1 : d.pole2;
-    return `你的${d.name}偏向「${pole}」（${d.data.pct}%），`;
-  });
-
-  return `作为「${type.name}」，${parts.join('')}共同构成了你独特的能量光谱。${type.tagline}理解自己的能量类型，不是给自己贴标签，而是更好地理解自己的节奏与边界。`;
-}
-
-function renderGallery(currentCode) {
-  const gallery = document.getElementById('type-gallery');
-  gallery.innerHTML = '';
-  Object.entries(TYPES).forEach(([code, t]) => {
-    const isCurrent = code === currentCode;
-    const div = document.createElement('div');
-    div.className = `flex items-center gap-2 p-2 rounded-xl text-sm ${isCurrent ? 'bg-primary/10 border border-primary/20' : 'opacity-50'}`;
-    div.innerHTML = `<span class="text-xl">${t.emoji}</span><span class="text-[11px] font-medium">${code}<br/>${t.name}</span>`;
-    gallery.appendChild(div);
-  });
-}
-
-// ==================== SHARE ====================
-function shareResult() {
-  const typeCode = document.getElementById('type-code-display').textContent.split(' · ')[0];
-  const type = TYPES[typeCode];
-  const shareText = `测测你是白茶女孩还是海妖女孩？→ LBTI 爱与生活能量测试\n我的类型：${typeCode} ${type.name} ${type.emoji}\n${type.tagline}`;
-
-  if (navigator.share) {
-    navigator.share({ title: 'LBTI 爱与生活能量测试', text: shareText }).catch(() => {});
+  // Result card
+  html += '<div class="card p-6 mb-4">';
+  html += '<img src="' + fixImagePath(r.image || 'images/' + r.code + '.png') + '" alt="' + r.cn + '" class="w-full max-w-[240px] mx-auto block mb-4" onerror="this.style.display=\'none\'">';
+  html += '<h2 class="text-center text-2xl font-extrabold mb-1">' + r.code + ' · ' + r.cn + '</h2>';
+  html += '<p class="text-center text-pink-500 italic mb-3">「' + r.intro + '」</p>';
+  if (r.isDrunk) {
+    html += '<p class="text-center text-sm text-amber-500 font-semibold">🍶 ' + t('隐藏人格已激活 · 酒精异常因子已接管', 'Hidden type activated') + '</p>';
+  } else if (r.isFallback) {
+    html += '<p class="text-center text-sm text-purple-500 font-semibold">🎲 ' + t('标准人格库最高匹配仅 ', 'Best match only ') + r.similarity + '% · ' + t('系统强制兜底', 'fallback') + '</p>';
   } else {
-    navigator.clipboard.writeText(shareText).then(() => {
-      alert('结果已复制到剪贴板，粘贴分享给你的朋友吧～');
-    }).catch(() => {
-      prompt('复制这段文字分享给你的朋友：', shareText);
+    html += '<p class="text-center text-sm text-pink-400 font-semibold">🎯 ' + t('匹配度 ', 'Match: ') + r.similarity + '%</p>';
+  }
+  html += '<p class="text-xs text-center text-slate-400 mt-1">📊 ' + t('理论稀有度 ', 'Rarity: ') + rarity.pct + '% · ' + t('约 1/', '~1/') + rarity.oneIn + ' · ' + rarity.label + '</p>';
+  html += '</div>';
+
+  // Dimension breakdown
+  var models = [
+    { cn: '自我模型', en: 'Self Model', dims: ['S1','S2','S3'] },
+    { cn: '情感模型', en: 'Emotion Model', dims: ['E1','E2','E3'] },
+    { cn: '态度模型', en: 'Attitude Model', dims: ['A1','A2','A3'] },
+    { cn: '行动驱力模型', en: 'Action Drive', dims: ['Ac1','Ac2','Ac3'] },
+    { cn: '社交模型', en: 'Social Model', dims: ['So1','So2','So3'] }
+  ];
+  html += '<div class="card p-6 mb-4">';
+  html += '<h3 class="font-bold mb-4 text-center">📊 ' + t('你的十五维度', 'Your 15 Dimensions') + '</h3>';
+  models.forEach(function(model) {
+    html += '<p class="text-xs font-bold text-pink-400 mt-3 mb-2">' + t(model.cn, model.en) + '</p>';
+    model.dims.forEach(function(dim) {
+      var meta = DIMENSIONS.meta[dim];
+      var level = r.dimScores[dim];
+      var exp = DIMENSIONS.explanations[dim] ? DIMENSIONS.explanations[dim][level] : '';
+      html += '<div class="flex items-center justify-between py-2 border-b border-pink-50 dark:border-pink-900/20 text-sm">';
+      html += '<span>' + meta.name + '</span>';
+      html += '<span class="px-2 py-0.5 rounded-full text-xs font-bold level-' + level + '">' + level + '</span>';
+      html += '</div>';
+      html += '<p class="text-xs text-slate-400 pl-2 mb-1">' + exp + '</p>';
     });
+  });
+  html += '</div>';
+
+  // Full description
+  html += '<div class="card p-6 mb-4">';
+  html += '<h3 class="font-bold mb-3">💬 ' + t('完整解读', 'Full Description') + '</h3>';
+  html += '<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">' + r.desc + '</p>';
+  html += '</div>';
+
+  // Share buttons
+  html += '<div class="flex gap-3 mb-6">';
+  html += '<button onclick="generateShareCard()" class="flex-1 py-3 rounded-2xl font-semibold text-white btn-primary">📸 ' + t('生成分享卡片', 'Share Card') + '</button>';
+  html += '<button onclick="copyShareLink()" class="flex-1 py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">🔗 ' + t('复制链接', 'Copy Link') + '</button>';
+  html += '</div>';
+
+  // Actions
+  html += '<div class="flex gap-3 mb-3">';
+  html += '<button onclick="startQuiz(true)" class="flex-1 py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-slate-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">🔄 ' + t('重新测试', 'Retake') + '</button>';
+  html += '<button onclick="showWiki()" class="flex-1 py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-slate-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">📖 ' + t('查看全部人格', 'All Types') + '</button>';
+  html += '</div>';
+  html += '<button onclick="backToLanding()" class="w-full py-3 rounded-2xl border-2 border-pink-200 dark:border-pink-900/50 font-semibold text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition">🏠 ' + t('返回首页查看历史记录', 'Home · History') + '</button>';
+
+  document.getElementById('result-content').innerHTML = html;
+  history.replaceState(null,'','#result/' + r.code);
+  try { localStorage.setItem('sbti-result', JSON.stringify(r)); saveToHistory(r); } catch(e) {}
+}
+
+// ==================== TEST HISTORY ====================
+function loadHistory() {
+  try {
+    var saved = localStorage.getItem('sbti-history');
+    testHistory = saved ? JSON.parse(saved) : [];
+  } catch(e) { testHistory = []; }
+}
+
+function saveToHistory(r) {
+  loadHistory(); // ensure fresh
+  // Remove duplicate by code+timestamp if same timestamp already exists
+  var entry = {
+    code: r.code,
+    cn: r.cn,
+    intro: r.intro,
+    similarity: r.similarity,
+    isDrunk: !!r.isDrunk,
+    isFallback: !!r.isFallback,
+    dimScores: r.dimScores,
+    userVector: r.userVector,
+    timestamp: Date.now()
+  };
+  // Remove old entry with same code if it was from today (dedup within same day)
+  var today = new Date().toDateString();
+  testHistory = testHistory.filter(function(e) {
+    return new Date(e.timestamp).toDateString() !== today || e.code !== entry.code;
+  });
+  testHistory.push(entry);
+  // Keep max 20 entries
+  if (testHistory.length > 20) testHistory = testHistory.slice(-20);
+  try {
+    localStorage.setItem('sbti-history', JSON.stringify(testHistory));
+  } catch(e) {}
+}
+
+function renderHistory() {
+  var section = document.getElementById('history-section');
+  var list = document.getElementById('history-list');
+  if (!section || !list) return;
+  if (!testHistory.length) {
+    section.classList.add('hidden');
+    return;
+  }
+  section.classList.remove('hidden');
+  // Show most recent first
+  var entries = testHistory.slice().reverse();
+  var html = '';
+  entries.forEach(function(entry) {
+    var date = new Date(entry.timestamp);
+    var dateStr = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+    var icon = entry.isDrunk ? '🍶' : '🎭';
+    var sub = entry.isDrunk
+      ? t('隐藏人格已激活', 'Hidden type')
+      : t('匹配度 ', 'Match: ') + entry.similarity + '%';
+    html += '<div class="card p-3 flex items-center gap-3 cursor-pointer hover:shadow-md transition mb-2" onclick="viewHistoryResult(' + entry.timestamp + ')">';
+    html += '<span class="text-2xl flex-shrink-0">' + icon + '</span>';
+    html += '<div class="flex-1 min-w-0">';
+    html += '<p class="font-bold text-sm truncate">' + entry.code + ' · ' + entry.cn + '</p>';
+    html += '<p class="text-xs text-slate-400 truncate">' + sub + ' · ' + dateStr + '</p>';
+    html += '</div>';
+    html += '<span class="text-slate-300 text-lg flex-shrink-0">→</span>';
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+
+function viewHistoryResult(ts) {
+  var entry = testHistory.find(function(e) { return e.timestamp === ts; });
+  if (!entry) return;
+  // Reconstruct result object from history entry
+  var o = findOutcome(entry.code);
+  if (!o) return;
+  result = cloneOutcome(o);
+  result.similarity = entry.similarity;
+  result.isDrunk = entry.isDrunk;
+  result.isFallback = entry.isFallback;
+  result.dimScores = entry.dimScores;
+  result.userVector = entry.userVector;
+  showResult();
+}
+
+function clearHistory() {
+  if (!confirm(t('确定清空所有测试记录？', 'Clear all test records?'))) return;
+  testHistory = [];
+  localStorage.removeItem('sbti-history');
+  renderHistory();
+  toast(t('记录已清空', 'History cleared'));
+}
+
+function restoreResult() {
+  try {
+    var saved = localStorage.getItem('sbti-result');
+    if (saved) { result = JSON.parse(saved); showResult(); return; }
+  } catch(e) {}
+  // Also check history for the code in the URL hash
+  var hashCode = location.hash.replace('#result/', '').replace('#result', '');
+  if (hashCode && testHistory.length) {
+    loadHistory();
+    var entry = testHistory.slice().reverse().find(function(e) { return e.code === hashCode; });
+    if (entry) { viewHistoryResult(entry.timestamp); return; }
+  }
+  backToLanding();
+}
+
+// ==================== WIKI GALLERY ====================
+function buildWikiGrid(filter) {
+  var outcomes = OUTCOMES_DATA.outcomes;
+  var grid = document.getElementById('wiki-grid');
+  var html = '';
+  outcomes.forEach(function(o) {
+    if (filter) {
+      var q = filter.toLowerCase();
+      if (o.code.toLowerCase().indexOf(q) === -1 && o.cn.indexOf(q) === -1) return;
+    }
+    var rarity = getRarity(o.code);
+    html += '<div class="gallery-card" onclick="openWikiDetail(\'' + o.code + '\')">';
+    html += '<img src="' + fixImagePath(o.image || 'images/' + o.code + '.png') + '" alt="' + o.cn + '" loading="lazy" onerror="this.style.display=\'none\'">';
+    html += '<div class="p-3">';
+    html += '<p class="font-bold text-sm">' + o.code + '</p>';
+    html += '<p class="text-xs text-slate-400">' + o.cn + '</p>';
+    html += '<p class="text-[10px] text-pink-400 mt-0.5">🎲 ' + rarity.pct + '%</p>';
+    html += '</div></div>';
+  });
+  if (!html) html = '<p class="text-center text-slate-400 col-span-full py-8">😿 ' + t('没有匹配的人格', 'No matches') + '</p>';
+  grid.innerHTML = html;
+}
+
+function filterWiki() {
+  buildWikiGrid(document.getElementById('wiki-search').value);
+}
+
+function openWikiDetail(code) {
+  var o = findOutcome(code);
+  if (!o) return;
+  var rarity = getRarity(code);
+  var html = '';
+  html += '<div class="text-center mb-4">';
+  html += '<img src="' + fixImagePath(o.image || 'images/' + o.code + '.png') + '" alt="' + o.cn + '" class="w-[180px] mx-auto mb-3" onerror="this.style.display=\'none\'">';
+  html += '<h3 class="text-xl font-extrabold">' + o.code + ' · ' + o.cn + '</h3>';
+  html += '<p class="text-pink-500 italic mt-1">「' + o.intro + '」</p>';
+  html += '<p class="text-xs text-slate-400 mt-1">🎲 ' + t('理论稀有度 ', 'Rarity: ') + rarity.pct + '% · ' + t('约 1/', '~1/') + rarity.oneIn + ' · ' + rarity.label + '</p>';
+  if (o.isSpecial) {
+    var trigger = OUTCOMES_DATA.specialTriggers[o.code];
+    if (trigger) html += '<p class="text-xs text-amber-500 mt-1">' + trigger.badge + ' ' + trigger.label + '</p>';
+  }
+  html += '</div>';
+  html += '<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300 mb-4">' + o.desc + '</p>';
+  html += '<button onclick="closeModal()" class="w-full py-2 rounded-xl border border-pink-200 dark:border-pink-900/50 text-sm font-semibold text-slate-500">' + t('关闭', 'Close') + '</button>';
+
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal').classList.remove('hidden');
+  document.body.classList.add('no-scroll');
+  history.replaceState(null,'','#wiki/' + code);
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.add('hidden');
+  document.body.classList.remove('no-scroll');
+  history.replaceState(null,'','#wiki');
+}
+
+// ==================== SHARING ====================
+function generateShareCard() {
+  if (!result) return;
+  var canvas = document.getElementById('share-canvas');
+  var ctx = canvas.getContext('2d');
+  var W = 1200, H = 1600;
+  canvas.width = W;
+  canvas.height = H;
+
+  // 2x scale — all coords below are in logical 600x800 space
+  ctx.scale(2, 2);
+
+  // Background gradient
+  var bg = ctx.createLinearGradient(0, 0, 0, 800);
+  bg.addColorStop(0, '#fdf2f8');
+  bg.addColorStop(0.5, '#fce7f3');
+  bg.addColorStop(1, '#fdf2f8');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, 600, 800);
+
+  // Decorative circles
+  ctx.fillStyle = 'rgba(244,114,182,.06)';
+  ctx.beginPath(); ctx.arc(500, 120, 160, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(80, 650, 200, 0, Math.PI*2); ctx.fill();
+
+  // Top title
+  ctx.fillStyle = '#4a2040';
+  ctx.font = 'bold 34px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('SBTI ' + t('人格测试', 'Personality Test'), 300, 70);
+  ctx.font = '16px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillStyle = '#9d7a8f';
+  ctx.fillText(t('测测你是什么人格', 'Discover your type'), 300, 100);
+
+  // White result card
+  ctx.fillStyle = '#fff';
+  ctx.shadowColor = 'rgba(244,114,182,.15)';
+  ctx.shadowBlur = 30;
+  roundRectCanvas(ctx, 40, 130, 520, 470, 24);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Code
+  ctx.fillStyle = '#f472b6';
+  ctx.font = 'bold 52px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText(result.code, 300, 220);
+
+  // Chinese name
+  ctx.fillStyle = '#4a2040';
+  ctx.font = 'bold 30px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText(result.cn, 300, 265);
+
+  // Intro quote
+  ctx.fillStyle = '#f472b6';
+  ctx.font = 'italic 18px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('「' + result.intro + '」', 300, 310);
+
+  // Match info
+  ctx.fillStyle = '#9d7a8f';
+  ctx.font = '15px "PingFang SC","Microsoft YaHei",sans-serif';
+  var matchText = result.isDrunk ? '🍶 ' + t('隐藏人格已激活', 'Hidden type') : '🎯 ' + t('匹配度 ', 'Match: ') + result.similarity + '%';
+  ctx.fillText(matchText, 300, 350);
+
+  var rarity = getRarity(result.code);
+  ctx.fillText('📊 ' + t('稀有度 ', 'Rarity: ') + rarity.pct + '% · ' + t('约 1/', '~1/') + rarity.oneIn, 300, 378);
+
+  // Character image — draw with better quality
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function() {
+    // Center crop to square, draw at higher res
+    var size = 200;
+    var x = 300 - size/2;
+    var y = 400;
+    ctx.drawImage(img, x, y, size, size);
+    drawFooter();
+  };
+  img.onerror = function() {
+    ctx.font = '90px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🎭', 300, 520);
+    drawFooter();
+  };
+  img.src = fixImagePath(result.image || 'images/' + result.code + '.png');
+
+  function drawFooter() {
+    ctx.textAlign = 'center';
+
+    // Hint text
+    ctx.fillStyle = '#9d7a8f';
+    ctx.font = '14px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText(t('🔥 27 种人格结局等你发现', '🔥 27 personality types await'), 300, 680);
+
+    // CTA pill
+    ctx.fillStyle = 'rgba(244,114,182,.1)';
+    roundRectCanvas(ctx, 110, 710, 380, 60, 30);
+    ctx.fill();
+    ctx.fillStyle = '#f472b6';
+    ctx.font = 'bold 24px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText(t('🔍 小红书搜「SBTI人格测试」', '🔍 Try the SBTI Quiz!'), 300, 750);
+
+    // Download — reset scale before export so PNG is full 1200x1600
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    var link = document.createElement('a');
+    link.download = 'SBTI-' + result.code + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    toast(t('📸 分享卡片已保存，快去发小红书吧！', '📸 Card saved! Share it now!'));
   }
 }
 
-function resetQuiz() {
-  currentQuestion = 0;
-  answers = new Array(24).fill(null);
-  selectedValue = null;
-  showView('landing');
+function copyShareLink() {
+  var url = location.origin + location.pathname + '#result/' + (result ? result.code : '');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(function() {
+      toast(t('🔗 链接已复制，分享给朋友吧~', '🔗 Link copied!'));
+    });
+  } else {
+    prompt('Copy:', url);
+  }
 }
 
-// ==================== INIT ====================
-showView('landing');
+// ==================== UTILS ====================
+function roundRectCanvas(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+function toast(msg) {
+  var el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function() { el.remove(); }, 2000);
+}
+
+function toggleTheme() {
+  var isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('sbti-theme', isDark ? 'dark' : 'light');
+}
+
+function isWechat() { return /micromessenger/i.test(navigator.userAgent); }
+
+// ==================== ANALYTICS ====================
+// Cloudflare Web Analytics: enable in CF Dashboard → Web Analytics, zero code change.
+// Google Analytics 4: uncomment below and replace G-XXXXXXXXXX with your ID.
+/*
+(function(){
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
+  document.head.appendChild(s);
+  s.onload = function(){
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  };
+})();
+*/
+
+// Simple pageview counter (localStorage-based, approximate unique visitors)
+(function(){
+  var key = 'sbti-visit';
+  var now = Date.now();
+  var prev = localStorage.getItem(key);
+  // Count as new visit if never visited or >30min since last visit
+  if (!prev || (now - parseInt(prev)) > 1800000) {
+    localStorage.setItem(key, now);
+    // ponytail: sendBeacon to a no-op — replace URL with your own analytics endpoint
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('https://sbti-wiki.pages.dev/cdn-cgi/rum?', JSON.stringify({page:location.pathname}));
+    }
+  }
+  // Show test completion counter
+  fetchTestCount();
+})();
+
+// Global test completion counter via Cloudflare Pages Function
+var globalTestCount = 0;
+
+function updateTestCounter() {
+  var el = document.getElementById('test-counter');
+  if (!el) return;
+  if (globalTestCount > 0) {
+    el.textContent = (lang === 'cn' ? '📊 全球已有 ' : '📊 ') + globalTestCount.toLocaleString() + (lang === 'cn' ? ' 人完成了测试' : ' people have tested');
+  }
+}
+
+async function fetchTestCount() {
+  try {
+    var res = await fetch('/api/counter');
+    if (res.ok) {
+      var data = await res.json();
+      globalTestCount = data.count || 0;
+      updateTestCounter();
+    }
+  } catch (e) {
+    // Degrade silently — counter just won't show
+  }
+}
+
+async function incrementTestCounter() {
+  try {
+    var res = await fetch('/api/counter', { method: 'POST' });
+    if (res.ok) {
+      var data = await res.json();
+      globalTestCount = data.count || 0;
+      updateTestCounter();
+    }
+  } catch (e) { /* degrade silently */ }
+}
+
+// ==================== BOOT ====================
+document.addEventListener('DOMContentLoaded', init);
 </script>
+
 </body>
 </html>
